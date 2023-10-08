@@ -51,7 +51,7 @@ namespace ConsoleApp.Parsing
 
         private List<ParsedRow> ParseRows(int headerRowIndex)
         {
-            var rowModels = new List<ParsedRow>();
+            var parsedRows = new List<ParsedRow>();
             int lastNotEmptyRow = GetLastNotEmptyRow();
 
             string lastDay = "";
@@ -73,11 +73,11 @@ namespace ConsoleApp.Parsing
 
                 if (parsedRow is not null)
                 {
-                    rowModels.Add(parsedRow);
+                    parsedRows.Add(parsedRow);
                 }
             }
 
-            return rowModels;
+            return parsedRows;
         }
 
         private ParsedRow? ParseRow(int row, string lastDay, string lastTime)
