@@ -1,20 +1,40 @@
-﻿using ConsoleApp.Parsing.Models;
+﻿using ConsoleApp.Parsing.Exceptions;
+using ConsoleApp.Parsing.Models;
+using ConsoleApp.Parsing.TableModels;
 using OfficeOpenXml;
 using System.Text.RegularExpressions;
 
 namespace ConsoleApp.Parsing
 {
-    internal class ExcelTableParser
+    internal class ExcelTableParser : ITableParser
     {
-        private ExcelWorksheet table = default!;
+        private ITable table = default!;
 
         public ParsedTable Parse(string filePath)
         {
+            TryOpenTable(filePath);
+            return ParseTable();
+        }
+
+        private void TryOpenTable(string filePath)
+        {
+            try
+            {
+                OpenTable(filePath);
+            }
+            catch (Exception ex)
+            {
+                throw new TableNotFoundException(filePath, ex);
+            }
+        }
+
+        private void OpenTable(string filePath)
+        {
             var fileInfo = new FileInfo(filePath);
             ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-            using var package = new ExcelPackage(fileInfo);
-            this.table = package.Workbook.Worksheets[0];
-            return ParseTable();
+            var package = new ExcelPackage(fileInfo);
+            ExcelWorksheet excelWorksheet = package.Workbook.Worksheets[0];
+            this.table = new ExcelTable(excelWorksheet);
         }
 
         private ParsedTable ParseTable()
@@ -32,7 +52,7 @@ namespace ConsoleApp.Parsing
             {
                 for (int col = 1; IsNotEmptyCell(row, col); col++)
                 {
-                    string cellText = table.Cells[row, col].Text;
+                    string cellText = table[row, col];
                     if (cellText.Contains("факультет", StringComparison.InvariantCultureIgnoreCase))
                     {
                         parsedTable.Faculty = cellText.Trim();
@@ -52,7 +72,7 @@ namespace ConsoleApp.Parsing
         private List<ParsedRow> ParseRows(int headerRowIndex)
         {
             var parsedRows = new List<ParsedRow>();
-            int lastNotEmptyRow = GetLastNotEmptyRow();
+            int lastNotEmptyRow = table.GetLastNotEmptyRow();
 
             string lastDay = "";
             string lastTime = "";
@@ -61,12 +81,12 @@ namespace ConsoleApp.Parsing
             {
                 if (IsNotEmptyCell(row, 1))
                 {
-                    lastDay = table.Cells[row, 1].Text;
+                    lastDay = table[row, 1];
                 }
 
-                if(IsNotEmptyCell(row, 2))
+                if (IsNotEmptyCell(row, 2))
                 {
-                    lastTime = table.Cells[row, 2].Text;
+                    lastTime = table[row, 2];
                 }
 
                 ParsedRow? parsedRow = ParseRow(row, lastDay, lastTime);
@@ -86,7 +106,7 @@ namespace ConsoleApp.Parsing
 
             for (int col = 3; IsNotEmptyCell(row, col); col++)
             {
-                parsedValues.Add(table.Cells[row, col].Text);
+                parsedValues.Add(table[row, col]);
             }
 
             if (parsedValues.Count != 4)
@@ -104,40 +124,23 @@ namespace ConsoleApp.Parsing
                 Classroom = parsedValues[3],
             };
         }
+
         private bool IsNotEmptyCell(int row, int col)
         {
-            return !string.IsNullOrWhiteSpace(table.Cells[row, col].Text);
+            return !string.IsNullOrWhiteSpace(table[row, col]);
         }
 
         private int FindHeaderRow()
         {
             int startRow = 1;
-            while (!this.table.Cells[startRow, 1].Text
+            while (!this.table[startRow, 1]
                 .Equals("День", StringComparison.InvariantCultureIgnoreCase))
             {
+                var debug = this.table[startRow, 1];
                 startRow++;
             }
 
             return startRow + 1;
-        }
-
-        private int GetLastNotEmptyRow()
-        {
-            if (table.Dimension == null)
-            {
-                return 0;
-            }
-            var row = table.Dimension.End.Row;
-            while (row >= 1)
-            {
-                var range = table.Cells[row, 1, row, table.Dimension.End.Column];
-                if (range.Any(c => !string.IsNullOrEmpty(c.Text)))
-                {
-                    break;
-                }
-                row--;
-            }
-            return row;
         }
     }
 }

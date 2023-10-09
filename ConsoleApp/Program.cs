@@ -18,7 +18,10 @@ namespace ConsoleApp
             var schedule = new Schedule();
 
             Console.WriteLine("Input file names to parse:");
-            string[] fileNames = Console.ReadLine().Split(' ');
+            string[] fileNames = Console.ReadLine()
+                .Split(' ', StringSplitOptions.TrimEntries)
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .ToArray();
             if (!fileNames.Any())
             {
                 fileNames = new string[] { "fen.xlsx", "ipz.xlsx" };

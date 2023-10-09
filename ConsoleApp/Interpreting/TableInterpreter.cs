@@ -46,7 +46,7 @@ namespace ConsoleApp.Interpreting
 
                     if (specialization is not null)
                     {
-                        //If there is specialization alias inside brackets, delete all brackets from original string
+                        //If there is specialization alias inside brackets, delete all brackets' content from original string
                         parsedRow.Discipline = parsedRow.Discipline.Replace(matching, "");
                         records.Add(MapRowToRecord(parsedRow, parsedTable.Faculty, specialization));
                     }
