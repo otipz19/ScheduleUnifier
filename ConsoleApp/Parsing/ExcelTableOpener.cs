@@ -7,6 +7,7 @@ namespace ConsoleApp.Parsing
     {
         private ExcelPackage package = default!;
 
+
         protected override ITable OpenTable(string filePath)
         {
             var fileInfo = new FileInfo(filePath);

@@ -8,36 +8,14 @@ namespace ConsoleApp.Parsing
 {
     internal class TableParser : ITableParser
     {
-        private ITable table = default!;
+        private readonly ITable table;
 
-        public ParsedTable Parse(string filePath)
+        public TableParser(ITable table)
         {
-            TryOpenTable(filePath);
-            return ParseTable();
+            this.table = table;
         }
 
-        private void TryOpenTable(string filePath)
-        {
-            try
-            {
-                OpenTable(filePath);
-            }
-            catch (Exception ex)
-            {
-                throw new TableNotFoundException(filePath, ex);
-            }
-        }
-
-        private void OpenTable(string filePath)
-        {
-            var fileInfo = new FileInfo(filePath);
-            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-            var package = new ExcelPackage(fileInfo);
-            ExcelWorksheet excelWorksheet = package.Workbook.Worksheets[0];
-            this.table = new ExcelTable(excelWorksheet);
-        }
-
-        private ParsedTable ParseTable()
+        public ParsedTable Parse()
         {
             int headerRowIndex = FindHeaderRow();
             var parsedTable = new ParsedTable();
