@@ -2,11 +2,11 @@
 
 namespace ConsoleApp.Parsing.TableModels
 {
-    internal class DocTable : ITable
+    internal class WordTable : ITable
     {
         private readonly Table table;
 
-        public DocTable(Table table)
+        public WordTable(Table table)
         {
             this.table = table;
         }

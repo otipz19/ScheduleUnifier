@@ -13,7 +13,7 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            var parser = new ExcelTableParser();
+            var parser = new TableParser();
             var interpreter = new TableInterpreter();
             var schedule = new Schedule();
 

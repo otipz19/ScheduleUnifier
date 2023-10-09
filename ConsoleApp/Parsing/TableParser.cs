@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace ConsoleApp.Parsing
 {
-    internal class ExcelTableParser : ITableParser
+    internal class TableParser : ITableParser
     {
         private ITable table = default!;
 
