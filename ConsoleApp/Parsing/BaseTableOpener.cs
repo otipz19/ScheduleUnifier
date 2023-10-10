@@ -5,11 +5,16 @@ namespace ConsoleApp.Parsing
 {
     internal abstract class BaseTableOpener
     {
-        public ITable TryOpen(string filePath)
+        public BaseTableOpener(string filePath)
+        {
+            TryOpenDocument(filePath);
+        }
+
+        private void TryOpenDocument(string filePath)
         {
             try
             {
-                return OpenTable(filePath);
+                OpenDocument(filePath);
             }
             catch (Exception ex)
             {
@@ -17,6 +22,6 @@ namespace ConsoleApp.Parsing
             }
         }
 
-        protected abstract ITable OpenTable(string filePath);
+        protected abstract void OpenDocument(string filePath);
     }
 }

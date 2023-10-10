@@ -6,6 +6,8 @@ namespace ConsoleApp.Parsing.TableModels
     {
         private readonly ExcelWorksheet table;
 
+        private int lastNotEmptyRow = -1;
+
         public ExcelTable(ExcelWorksheet table)
         {
             this.table = table;
@@ -15,11 +17,18 @@ namespace ConsoleApp.Parsing.TableModels
 
         public int GetLastNotEmptyRow()
         {
+            if (lastNotEmptyRow != -1)
+            {
+                return lastNotEmptyRow;
+            }
+
             if (table.Dimension == null)
             {
                 return 0;
             }
+
             var row = table.Dimension.End.Row;
+
             while (row >= 1)
             {
                 var range = table.Cells[row, 1, row, table.Dimension.End.Column];
@@ -29,7 +38,8 @@ namespace ConsoleApp.Parsing.TableModels
                 }
                 row--;
             }
-            return row;
+
+            return lastNotEmptyRow = row;
         }
     }
 }

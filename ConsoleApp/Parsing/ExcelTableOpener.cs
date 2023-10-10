@@ -7,14 +7,22 @@ namespace ConsoleApp.Parsing
     {
         private ExcelPackage package = default!;
 
+        public ExcelTableOpener(string filePath) : base(filePath)
+        {
+        }
 
-        protected override ITable OpenTable(string filePath)
+        public ITable Table { get; private set; }
+
+        public IFacultyAndSpecializationParser FacultyAndSpecializationParser { get; private set; }
+
+        protected override void OpenDocument(string filePath)
         {
             var fileInfo = new FileInfo(filePath);
             ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
             package = new ExcelPackage(fileInfo);
             ExcelWorksheet excelWorksheet = package.Workbook.Worksheets[0];
-            return new ExcelTable(excelWorksheet);
+            Table = new ExcelTable(excelWorksheet);
+            FacultyAndSpecializationParser = new ExcelFacultyAndSpecializationParser(Table);
         }
 
         public void Close()

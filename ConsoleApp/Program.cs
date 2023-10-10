@@ -35,7 +35,7 @@ namespace ConsoleApp
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"{ex.Message}\n{ex.StackTrace}");
             }
         }
 
@@ -54,14 +54,13 @@ namespace ConsoleApp
         private static ParsedTable ParseTable((string filePath, bool isExcel) file)
         {
             ITableOpener tableOpener = ResolveTableOpenerType(file);
-            ITable table = tableOpener.TryOpen(file.filePath);
-            ITableParser tableParser = new TableParser(table);
+            ITableParser tableParser = new TableParser(tableOpener);
             return tableParser.Parse();
         }
 
         private static ITableOpener ResolveTableOpenerType((string filePath, bool isExcel) file)
         {
-            return file.isExcel ? new ExcelTableOpener() : new WordTableOpener();
+            return file.isExcel ? new ExcelTableOpener(file.filePath) : new WordTableOpener(file.filePath);
         }
 
         private static void SerializeSchedule()

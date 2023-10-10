@@ -1,7 +1,5 @@
-﻿using ConsoleApp.Parsing.Exceptions;
-using ConsoleApp.Parsing.Models;
+﻿using ConsoleApp.Parsing.Models;
 using ConsoleApp.Parsing.TableModels;
-using OfficeOpenXml;
 using System.Text.RegularExpressions;
 
 namespace ConsoleApp.Parsing
@@ -9,43 +7,45 @@ namespace ConsoleApp.Parsing
     internal class TableParser : ITableParser
     {
         private readonly ITable table;
+        private readonly IFacultyAndSpecializationParser facultyAndSpecializationParser;
 
-        public TableParser(ITable table)
+        public TableParser(ITableOpener tableOpener)
         {
-            this.table = table;
+            this.table = tableOpener.Table;
+            this.facultyAndSpecializationParser = tableOpener.FacultyAndSpecializationParser;
         }
 
         public ParsedTable Parse()
         {
             int headerRowIndex = FindHeaderRow();
             var parsedTable = new ParsedTable();
-            ParseFacultyAndSpecializations(headerRowIndex, parsedTable);
+            (parsedTable.Faculty, parsedTable.Specializations) = facultyAndSpecializationParser.Parse();
             parsedTable.Rows = ParseRows(headerRowIndex);
             return parsedTable;
         }
 
-        private void ParseFacultyAndSpecializations(int headerRowIndex, ParsedTable parsedTable)
-        {
-            for (int row = 1; row < headerRowIndex; row++)
-            {
-                for (int col = 1; IsNotEmptyCell(row, col); col++)
-                {
-                    string cellText = table[row, col];
-                    if (cellText.Contains("факультет", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        parsedTable.Faculty = cellText.Trim();
-                    }
+        //private void ParseFacultyAndSpecializations(int headerRowIndex, ParsedTable parsedTable)
+        //{
+        //    for (int row = 1; row < headerRowIndex; row++)
+        //    {
+        //        for (int col = 1; IsNotEmptyCell(row, col); col++)
+        //        {
+        //            string cellText = table[row, col];
+        //            if (cellText.Contains("факультет", StringComparison.InvariantCultureIgnoreCase))
+        //            {
+        //                parsedTable.Faculty = cellText.Trim();
+        //            }
 
-                    else if (cellText.Contains("спеціальність", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        //This regex pattern retrieves from string all substrings that contained inside either "" or «» quotes
-                        parsedTable.Specializations = Regex.Matches(cellText, "(?<=\"|«)[^\"«]+(?=\"|»)")
-                                .Select(m => m.Value.Trim())
-                                .ToList();
-                    }
-                }
-            }
-        }
+        //            else if (cellText.Contains("спеціальність", StringComparison.InvariantCultureIgnoreCase))
+        //            {
+        //                //This regex pattern retrieves from string all substrings that contained inside either "" or «» quotes
+        //                parsedTable.Specializations = Regex.Matches(cellText, "(?<=\"|«)[^\"«]+(?=\"|»)")
+        //                        .Select(m => m.Value.Trim())
+        //                        .ToList();
+        //            }
+        //        }
+        //    }
+        //}
 
         private List<ParsedRow> ParseRows(int headerRowIndex)
         {

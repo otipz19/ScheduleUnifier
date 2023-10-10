@@ -1,4 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace ConsoleApp.Parsing.TableModels
 {
@@ -15,8 +15,23 @@ namespace ConsoleApp.Parsing.TableModels
         {
             get
             {
-                TableCell cell = table.Elements<TableRow>().ElementAt(row)
-                    .Elements<TableCell>().ElementAt(col);
+                //Just to conduct with 1-based indexing from EPPlus
+                row--;
+                col--;
+
+                var rows = table.Elements<TableRow>().ToList();
+                if (row >= rows.Count() - 1)
+                {
+                    return string.Empty;
+                }
+
+                var cells = rows.ElementAt(row).Elements<TableCell>();
+                if(col >= cells.Count() - 1)
+                {
+                    return string.Empty;
+                }
+
+                TableCell cell = cells.ElementAt(col);
                 return GetCellText(cell);
             }
         }
@@ -40,25 +55,25 @@ namespace ConsoleApp.Parsing.TableModels
 
         private static string GetCellText(TableCell cell)
         {
-            Paragraph? paragraph = cell.Elements<Paragraph>().FirstOrDefault();
-            if (paragraph is null)
+            var paragraphs = cell.Elements<Paragraph>();
+            if (!paragraphs.Any())
             {
-                return "";
+                return string.Empty;
             }
 
-            Run? run = paragraph.Elements<Run>().FirstOrDefault();
-            if (run is null)
+            var runs = paragraphs.SelectMany(p => p.Elements<Run>());
+            if (!runs.Any())
             {
-                return "";
+                return string.Empty;
             }
 
-            Text? text = run.Elements<Text>().FirstOrDefault();
-            if (text is null)
+            var texts = runs.SelectMany(r => r.Elements<Text>().Select(t => t.Text)).ToArray();
+            if (!texts.Any())
             {
-                return "";
+                return string.Empty;
             }
 
-            return text.InnerText;
+            return string.Join(string.Empty, texts);
         }
     }
 }

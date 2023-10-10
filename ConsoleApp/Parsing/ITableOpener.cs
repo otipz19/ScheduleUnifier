@@ -4,8 +4,8 @@ namespace ConsoleApp.Parsing
 {
     internal interface ITableOpener
     {
-        public ITable TryOpen(string filePath);
+        public ITable Table { get; }
 
-        public void Close();
+        public IFacultyAndSpecializationParser FacultyAndSpecializationParser { get; }
     }
 }

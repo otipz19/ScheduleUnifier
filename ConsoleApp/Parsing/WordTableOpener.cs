@@ -1,5 +1,5 @@
 ﻿using ConsoleApp.Parsing.TableModels;
-using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Packaging;
 
 namespace ConsoleApp.Parsing
@@ -8,11 +8,17 @@ namespace ConsoleApp.Parsing
     {
         private WordprocessingDocument doc = default!;
 
-        protected override ITable OpenTable(string filePath)
+        public WordTableOpener(string filePath) : base(filePath) { }
+
+        public ITable Table { get; private set; }
+
+        public IFacultyAndSpecializationParser FacultyAndSpecializationParser { get; private set; }
+
+        protected override void OpenDocument(string filePath)
         {
             doc = WordprocessingDocument.Open(filePath, false);
-            Table table = doc.MainDocumentPart!.Document.Body!.Elements<Table>().First();
-            return new WordTable(table);
+            Table = new WordTable(doc.MainDocumentPart!.Document.Body!.Elements<Table>().First());
+            FacultyAndSpecializationParser = new WordFacultyAndSpecializationParser(doc);
         }
 
         public void Close()
