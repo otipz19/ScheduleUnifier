@@ -6,9 +6,26 @@ namespace ConsoleApp.Parsing.TableModels
     {
         private readonly Table table;
 
+        private string[,] cells;
+
         public WordTable(Table table)
         {
             this.table = table;
+
+            var rows = table.Elements<TableRow>();
+            int rowCount = rows.Count();
+            var cols = rows.First().Elements<TableCell>();
+            int colCount = cols.Count();
+
+            cells = new string[rowCount, colCount];
+
+            for (int i = 0; i < rowCount; i++)
+            {
+                for (int j = 0; j < colCount; j++)
+                {
+                    cells[i, j] = GetStringFromWordTable(i, j);
+                }
+            }
         }
 
         public string this[int row, int col]
@@ -18,21 +35,27 @@ namespace ConsoleApp.Parsing.TableModels
                 //Just to conduct with 1-based indexing from EPPlus
                 row--;
                 col--;
-
-                var rows = table.Elements<TableRow>().ToList();
-                if (row >= rows.Count() - 1)
+                try
+                {
+                    return cells[row, col];
+                }
+                catch
                 {
                     return string.Empty;
                 }
+            }
+        }
 
-                var cells = rows.ElementAt(row).Elements<TableCell>();
-                if(col >= cells.Count() - 1)
-                {
-                    return string.Empty;
-                }
-
-                TableCell cell = cells.ElementAt(col);
-                return GetCellText(cell);
+        public string GetStringFromWordTable(int row, int col)
+        {
+            try
+            {
+                TableCell cell = table.Elements<TableRow>().ElementAt(row).Elements<TableCell>().ElementAt(col);
+                return cell.InnerText;
+            }
+            catch
+            {
+                return string.Empty;
             }
         }
 
@@ -50,30 +73,7 @@ namespace ConsoleApp.Parsing.TableModels
         private bool IsRowNotEmpty(TableRow row)
         {
             return row.Elements<TableCell>()
-                .Any(c => !string.IsNullOrEmpty(GetCellText(c)));
-        }
-
-        private static string GetCellText(TableCell cell)
-        {
-            var paragraphs = cell.Elements<Paragraph>();
-            if (!paragraphs.Any())
-            {
-                return string.Empty;
-            }
-
-            var runs = paragraphs.SelectMany(p => p.Elements<Run>());
-            if (!runs.Any())
-            {
-                return string.Empty;
-            }
-
-            var texts = runs.SelectMany(r => r.Elements<Text>().Select(t => t.Text)).ToArray();
-            if (!texts.Any())
-            {
-                return string.Empty;
-            }
-
-            return string.Join(string.Empty, texts);
+                .Any(c => !string.IsNullOrEmpty(c.InnerText));
         }
     }
 }

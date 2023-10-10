@@ -58,17 +58,26 @@ namespace ConsoleApp.Interpreting
 
         private RecordModel MapRowToRecord(ParsedRow parsedRow, string faculty, string specialization)
         {
-            return new RecordModel()
+            var record = new RecordModel()
             {
                 Faculty = faculty,
                 Specialization = specialization,
                 Day = parsedRow.Day,
                 Time = parsedRow.Time,
-                Discipline = parsedRow.Discipline,
+                Discipline = FormatDiscipline(parsedRow),
                 Group = FormatGroup(parsedRow.Group),
                 Weeks = parsedRow.Weeks,
                 Classroom = FormatClassroom(parsedRow.Classroom),
             };
+            return record;
+        }
+
+        private static string FormatDiscipline(ParsedRow parsedRow)
+        {
+            var trimmed = parsedRow.Discipline.Trim(',', '.');
+            var splitted = trimmed.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var joined = string.Join(' ', splitted);
+            return joined;
         }
 
         private string FormatClassroom(string classroom)
