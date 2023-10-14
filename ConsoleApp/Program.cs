@@ -11,71 +11,69 @@ namespace ScheduleUnifier
         private static bool isHttp;
         private static IEnumerable<string>? urls;
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            SetupCommandLine();
+            SetupRootCommand();
+            await rootCommand.InvokeAsync(args);
             var unifier = new Unifier(inputDirPath: inputDir, outputDirPath: outputDir, isHttp: isHttp, urls: urls);
             unifier.Run();
         }
 
-        private static void SetupCommandLine()
+        private static void SetupRootCommand()
         {
-            SetupInputDirOption();
-            SetupOutputDirOption();
-            SetupHttpOption();
-            SetupUrlsOption();
+            rootCommand.AddAlias("unif");
+            var inputDirOption = SetupInputDirOption();
+            var outputDirOption = SetupOutputDirOption();
+            var httpOption = SetupHttpOption();
+            var urlsOption = SetupUrlsOption();
+            rootCommand.SetHandler((inputDir, outputDir, isHttp, urls) =>
+            {
+                Program.inputDir = inputDir.FullName;
+                Program.outputDir = outputDir.FullName;
+                Program.isHttp = isHttp;
+                Program.urls = urls;
+            },
+            inputDirOption, outputDirOption, httpOption, urlsOption);
         }
 
-        private static void SetupUrlsOption()
+        private static Option<IEnumerable<string>> SetupUrlsOption()
         {
             var urlsOption = new Option<IEnumerable<string>>(
                             name: "--urls",
                             description: "URLs to be used for loading files, when HTTP loading is enabled");
-            rootCommand.AddOption(urlsOption);
-            rootCommand.SetHandler((urls) =>
-            {
-                Program.urls = urls;
-            },
-            urlsOption);
+            urlsOption.AddAlias("-u");
+            rootCommand.Add(urlsOption);
+            return urlsOption;
         }
 
-        private static void SetupHttpOption()
+        private static Option<bool> SetupHttpOption()
         {
-            var isHttpOption = new Option<bool>(
+            var httpOption = new Option<bool>(
                             name: "--http",
                             description: "Flag to determine whether files should be loaded via HTTP");
-            rootCommand.AddOption(isHttpOption);
-            rootCommand.SetHandler((isHttp) =>
-            {
-                Program.isHttp = isHttp;
-            },
-            isHttpOption);
+            httpOption.AddAlias("-h");
+            rootCommand.Add(httpOption);
+            return httpOption;
         }
 
-        private static void SetupOutputDirOption()
+        private static Option<DirectoryInfo> SetupOutputDirOption()
         {
             var outputDirOption = new Option<DirectoryInfo>(
                             name: "--output",
                             description: "Absolute or relative path to output directory");
-            rootCommand.AddOption(outputDirOption);
-            rootCommand.SetHandler((dir) =>
-            {
-                outputDir = dir.FullName;
-            },
-            outputDirOption);
+            outputDirOption.AddAlias("-o");
+            rootCommand.Add(outputDirOption);
+            return outputDirOption; 
         }
 
-        private static void SetupInputDirOption()
+        private static Option<DirectoryInfo> SetupInputDirOption()
         {
             var inputDirOption = new Option<DirectoryInfo>(
                             name: "--input",
                             description: "Absolute or relative path to input directory");
-            rootCommand.AddOption(inputDirOption);
-            rootCommand.SetHandler((dir) =>
-            {
-                inputDir = dir.FullName;
-            },
-            inputDirOption);
+            inputDirOption.AddAlias("-i");
+            rootCommand.Add(inputDirOption);
+            return inputDirOption;
         }
     }
 }

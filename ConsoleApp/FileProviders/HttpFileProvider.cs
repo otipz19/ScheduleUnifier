@@ -11,6 +11,11 @@
 
         public override (string filePath, bool isExcel)[] GetFilesToParse(string inputDirPath)
         {
+            if(!Directory.Exists(inputDirPath))
+            {
+                Directory.CreateDirectory(inputDirPath);
+            }
+
             var httpLoader = new HttpFileLoader();
             foreach (var url in urls)
             {
