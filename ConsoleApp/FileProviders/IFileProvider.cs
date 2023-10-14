@@ -2,6 +2,6 @@
 {
     public interface IFileProvider
     {
-        public (string filePath, bool isExcel)[] GetFilesToParse();
+        public (string filePath, bool isExcel)[] GetFilesToParse(string inputDirPath);
     }
 }

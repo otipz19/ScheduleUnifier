@@ -4,11 +4,9 @@ namespace ScheduleUnifier.FileProviders
 {
     public class LocalFileProvider : IFileProvider
     {
-        protected string FullInputPath => Path.Join(AppDomain.CurrentDomain.BaseDirectory, "input");
-
-        public virtual (string filePath, bool isExcel)[] GetFilesToParse()
+        public virtual (string filePath, bool isExcel)[] GetFilesToParse(string inputDirPath)
         {
-            var inputDir = new DirectoryInfo(FullInputPath);
+            var inputDir = new DirectoryInfo(inputDirPath);
 
             if (!inputDir.Exists)
             {

@@ -1,68 +1,81 @@
-﻿using ScheduleUnifier.FileProviders;
-using ScheduleUnifier.Interpreting;
-using ScheduleUnifier.Interpreting.Models;
-using ScheduleUnifier.Parsing.DocumentParsers;
-using ScheduleUnifier.Parsing.Models;
-using ScheduleUnifier.Parsing.TableOpeners;
-using ScheduleUnifier.Serialization;
+﻿using System.CommandLine;
 
 namespace ScheduleUnifier
 {
     internal static class Program
     {
-        private static string FullOutputDirectoryPath => Path.Join(AppDomain.CurrentDomain.BaseDirectory, "output");
-        private static string FullOutputFilePath => Path.Join(FullOutputDirectoryPath, "output.json");
+        private static readonly RootCommand rootCommand = new RootCommand("App for formating NaUKMA schedules into JSON format");
 
-        private static readonly ITableInterpreter interpreter = new TableInterpreter();
-        private static readonly ScheduleHandler scheduleHandler = new ScheduleHandler();
+        private static string? inputDir;
+        private static string? outputDir;
+        private static bool isHttp;
+        private static IEnumerable<string>? urls;
 
         static void Main(string[] args)
         {
-            try
-            {
-                IFileProvider fileProvider = new HttpFileProvider(new string[]
-                    { "https://my.ukma.edu.ua/files/schedule/2023/1/1472/3.xlsx" });
-                //IFileProvider fileProvider = new LocalFileProvider();
-                ProcessFiles(fileProvider.GetFilesToParse());
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"{ex.Message}\n{ex.StackTrace}");
-            }
+            SetupCommandLine();
+            var unifier = new Unifier(inputDirPath: inputDir, outputDirPath: outputDir, isHttp: isHttp, urls: urls);
+            unifier.Run();
         }
 
-        private static void ProcessFiles((string filePath, bool isExcel)[] filesToParse)
+        private static void SetupCommandLine()
         {
-            foreach (var file in filesToParse)
+            SetupInputDirOption();
+            SetupOutputDirOption();
+            SetupHttpOption();
+            SetupUrlsOption();
+        }
+
+        private static void SetupUrlsOption()
+        {
+            var urlsOption = new Option<IEnumerable<string>>(
+                            name: "--urls",
+                            description: "URLs to be used for loading files, when HTTP loading is enabled");
+            rootCommand.AddOption(urlsOption);
+            rootCommand.SetHandler((urls) =>
             {
-                ProcessDocumentInFile(file);
-            }
-
-            scheduleHandler.Serialize(FullOutputDirectoryPath, FullOutputFilePath);
+                Program.urls = urls;
+            },
+            urlsOption);
         }
 
-        private static void ProcessDocumentInFile((string filePath, bool isExcel) file)
+        private static void SetupHttpOption()
         {
-            ParsedDocument parsedDocument = ParseDocument(file);
-
-            IEnumerable<RecordModel> records = interpreter.Interpret(parsedDocument);
-
-            foreach (var record in records)
+            var isHttpOption = new Option<bool>(
+                            name: "--http",
+                            description: "Flag to determine whether files should be loaded via HTTP");
+            rootCommand.AddOption(isHttpOption);
+            rootCommand.SetHandler((isHttp) =>
             {
-                scheduleHandler.Schedule.Add(record);
-            }
+                Program.isHttp = isHttp;
+            },
+            isHttpOption);
         }
 
-        private static ParsedDocument ParseDocument((string filePath, bool isExcel) file)
+        private static void SetupOutputDirOption()
         {
-            IDocumentOpener documentOpener = ResolveDocumentOpenerType(file);
-            IDocumentParser documentParser = new DocumentParser(documentOpener);
-            return documentParser.Parse();
+            var outputDirOption = new Option<DirectoryInfo>(
+                            name: "--output",
+                            description: "Absolute or relative path to output directory");
+            rootCommand.AddOption(outputDirOption);
+            rootCommand.SetHandler((dir) =>
+            {
+                outputDir = dir.FullName;
+            },
+            outputDirOption);
         }
 
-        private static IDocumentOpener ResolveDocumentOpenerType((string filePath, bool isExcel) file)
+        private static void SetupInputDirOption()
         {
-            return file.isExcel ? new ExcelDocumentOpener(file.filePath) : new DocxDocumentOpener(file.filePath);
+            var inputDirOption = new Option<DirectoryInfo>(
+                            name: "--input",
+                            description: "Absolute or relative path to input directory");
+            rootCommand.AddOption(inputDirOption);
+            rootCommand.SetHandler((dir) =>
+            {
+                inputDir = dir.FullName;
+            },
+            inputDirOption);
         }
     }
 }
