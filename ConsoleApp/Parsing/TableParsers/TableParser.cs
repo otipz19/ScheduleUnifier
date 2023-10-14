@@ -1,4 +1,5 @@
 ﻿using ConsoleApp.Parsing.Exceptions;
+using ScheduleUnifier.Parsing.Exceptions;
 using ScheduleUnifier.Parsing.FacultyAndSpecializationParsers;
 using ScheduleUnifier.Parsing.Models;
 using ScheduleUnifier.Parsing.TableModels;
@@ -32,8 +33,8 @@ namespace ScheduleUnifier.Parsing.TableParsers
         {
             var parsedRows = new List<ParsedRow>();
 
-            string lastDay = "";
-            string lastTime = "";
+            string? lastDay = null;
+            string? lastTime = null;
 
             for (int row = headerRowIndex; row <= lastNotEmptyRow; row++)
             {
@@ -41,10 +42,18 @@ namespace ScheduleUnifier.Parsing.TableParsers
                 {
                     lastDay = table[row, 0];
                 }
+                else if(lastDay is null)
+                {
+                    throw new MissingSavedDayException(row);
+                }
 
                 if (IsNotEmptyCell(row, 1))
                 {
                     lastTime = table[row, 1];
+                }
+                else if (lastTime is null)
+                {
+                    throw new MissingSavedTimeException(row);
                 }
 
                 ParsedRow? parsedRow = ParseRow(row, lastDay, lastTime);

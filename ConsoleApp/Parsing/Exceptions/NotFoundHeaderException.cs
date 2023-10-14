@@ -1,6 +1,6 @@
-﻿namespace ConsoleApp.Parsing.Exceptions
+﻿namespace ScheduleUnifier.Parsing.Exceptions
 {
-    internal class NotFoundHeaderException : InvalidTableFormatException
+    public class NotFoundHeaderException : InvalidTableFormatException
     {
         public NotFoundHeaderException() : base("Table missing valid header!")
         {

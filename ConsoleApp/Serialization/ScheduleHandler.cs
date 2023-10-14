@@ -1,6 +1,6 @@
 ﻿using ScheduleUnifier.Serialization.Models;
 
-namespace ConsoleApp.Serialization
+namespace ScheduleUnifier.Serialization
 {
     public class ScheduleHandler
     {

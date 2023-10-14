@@ -1,4 +1,4 @@
-﻿using ConsoleApp.Serialization;
+﻿using ScheduleUnifier.Serialization;
 using ScheduleUnifier.Interpreting;
 using ScheduleUnifier.Interpreting.Models;
 using ScheduleUnifier.Parsing.Converters;
