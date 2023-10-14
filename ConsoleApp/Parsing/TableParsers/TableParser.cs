@@ -5,7 +5,7 @@ using ScheduleUnifier.Parsing.TableOpeners;
 
 namespace ScheduleUnifier.Parsing.TableParsers
 {
-    internal class TableParser : ITableParser
+    public class TableParser : ITableParser
     {
         private readonly ITable table;
         private readonly IFacultyAndSpecializationParser facultyAndSpecializationParser;

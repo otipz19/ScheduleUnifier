@@ -1,6 +1,6 @@
 ﻿namespace ScheduleUnifier.Parsing.TableModels
 {
-    internal interface ITable
+    public interface ITable
     {
         public string this[int row, int col] { get; }
 

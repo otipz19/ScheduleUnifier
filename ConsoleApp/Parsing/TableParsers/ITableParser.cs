@@ -2,7 +2,7 @@
 
 namespace ScheduleUnifier.Parsing.TableParsers
 {
-    internal interface ITableParser
+    public interface ITableParser
     {
         ParsedTable Parse();
     }
