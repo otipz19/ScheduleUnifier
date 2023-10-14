@@ -6,6 +6,7 @@ using ScheduleUnifier.Parsing.Exceptions;
 using ScheduleUnifier.Parsing.Models;
 using ScheduleUnifier.Parsing.TableOpeners;
 using ScheduleUnifier.Parsing.TableParsers;
+using ScheduleUnifier.Parsing.DocumentParsers;
 
 namespace ScheduleUnifier
 {
@@ -40,7 +41,7 @@ namespace ScheduleUnifier
 
         private static void ProcessTableInFile((string filePath, bool isExcel) file)
         {
-            ParsedTable parsedTable = ParseTable(file);
+            ParsedDocument parsedTable = ParseTable(file);
 
             IEnumerable<RecordModel> records = interpreter.Interpret(parsedTable);
 
@@ -50,16 +51,16 @@ namespace ScheduleUnifier
             }
         }
 
-        private static ParsedTable ParseTable((string filePath, bool isExcel) file)
+        private static ParsedDocument ParseTable((string filePath, bool isExcel) file)
         {
-            ITableOpener tableOpener = ResolveTableOpenerType(file);
-            ITableParser tableParser = new TableParser(tableOpener);
-            return tableParser.Parse();
+            IDocumentOpener documentOpener = ResolveDocumentOpenerType(file);
+            IDocumentParser documentParser = new DocumentParser(documentOpener);
+            return documentParser.Parse();
         }
 
-        private static ITableOpener ResolveTableOpenerType((string filePath, bool isExcel) file)
+        private static IDocumentOpener ResolveDocumentOpenerType((string filePath, bool isExcel) file)
         {
-            return file.isExcel ? new ExcelTableOpener(file.filePath) : new DocxTableOpener(file.filePath);
+            return file.isExcel ? new ExcelDocumentOpener(file.filePath) : new DocxDocumentOpener(file.filePath);
         }
 
         private static (string filePath, bool isExcel)[] GetFilesToParse()

@@ -1,53 +1,66 @@
 ﻿using ScheduleUnifier.Parsing.Exceptions;
 using ScheduleUnifier.Parsing.TableModels;
+using ScheduleUnifier.Serialization.Models;
 
 namespace ScheduleUnifier.Parsing.FacultyAndSpecializationParsers
 {
     internal class ExcelFacultyAndSpecializationParser : IFacultyAndSpecializationParser
     {
-        private readonly ITable table;
+        private readonly IEnumerable<ITable> tables;
         private readonly FacultyFinder facultyFinder = new FacultyFinder();
         private readonly SpecializationsFinder specializationsFinder = new SpecializationsFinder();
 
-        public ExcelFacultyAndSpecializationParser(ITable table)
+        private string? faculty = null;
+        private List<string>? specializations = null;
+        private bool hasFoundFaculty = false;
+        private bool hasFoundSpecializations = false;
+
+        public ExcelFacultyAndSpecializationParser(IEnumerable<ITable> tables)
         {
-            this.table = table;
+            this.tables = tables;
         }
 
         public (string faculty, IEnumerable<string> specializations) Parse()
         {
-            string? faculty = null;
-            var specializations = new List<string>();
-
-            int lastNotEmptyRow = table.GetLastNotEmptyRow();
-
-            for (int row = 0; row < lastNotEmptyRow && (faculty is null || specializations is null); row++)
+            foreach (var table in tables)
             {
-                for (int col = 0; !string.IsNullOrWhiteSpace(table[row, col]); col++)
-                {
-                    string cellText = table[row, col];
-                    if (faculty is null)
-                    {
-                        facultyFinder.TryFind(cellText, out faculty);
-                    }
-                    if(specializations is null || !specializations.Any())
-                    {
-                        specializationsFinder.TryFind(cellText, out specializations);
-                    }
-                }
+                if (hasFoundFaculty && hasFoundSpecializations)
+                    break;
+                ParseTable(table);
             }
 
-            if (faculty is null)
+            if (!hasFoundFaculty)
             {
                 throw new NotFoundFacultyException();
             }
 
-            if (specializations is null || !specializations.Any())
+            if (!hasFoundSpecializations)
             {
                 throw new NotFoundSpecializationsException();
             }
 
-            return (faculty, specializations);
+            return (faculty!, specializations!);
+        }
+
+        private void ParseTable(ITable table)
+        {
+            int lastNotEmptyRow = table.GetLastNotEmptyRow();
+
+            for (int row = 0; row <= lastNotEmptyRow && !(hasFoundFaculty && hasFoundSpecializations); row++)
+            {
+                for (int col = 0; !string.IsNullOrWhiteSpace(table[row, col]); col++)
+                {
+                    string cellText = table[row, col];
+                    if (!hasFoundFaculty)
+                    {
+                        hasFoundFaculty = facultyFinder.TryFind(cellText, out faculty);
+                    }
+                    if (!hasFoundSpecializations)
+                    {
+                        hasFoundSpecializations = specializationsFinder.TryFind(cellText, out specializations);
+                    }
+                }
+            }
         }
     }
 }

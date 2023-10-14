@@ -5,6 +5,6 @@ namespace ScheduleUnifier.Interpreting
 {
     public interface ITableInterpreter
     {
-        IEnumerable<RecordModel> Interpret(ParsedTable parsedTable);
+        IEnumerable<RecordModel> Interpret(ParsedDocument parsedTable);
     }
 }

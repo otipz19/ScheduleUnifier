@@ -4,16 +4,16 @@ using ScheduleUnifier.Parsing.TableOpeners;
 
 namespace ScheduleUnifierTests.Mocks
 {
-    internal class TableOpenerMock : ITableOpener
+    internal class TableOpenerMock : IDocumentOpener
     {
         public TableOpenerMock(ITable table, IFacultyAndSpecializationParser facultyAndSpecializationParser)
         {
-            Table = table;
+            Tables = new ITable[] { table };
             FacultyAndSpecializationParser = facultyAndSpecializationParser;
         }
 
-        public ITable Table { get; init; }
-
         public IFacultyAndSpecializationParser FacultyAndSpecializationParser { get; init; }
+
+        public IEnumerable<ITable> Tables { get; init; }
     }
 }

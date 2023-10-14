@@ -1,33 +1,52 @@
 ﻿using ScheduleUnifier.Parsing.Exceptions;
-using ScheduleUnifier.Parsing.FacultyAndSpecializationParsers;
 using ScheduleUnifier.Parsing.Models;
 using ScheduleUnifier.Parsing.TableModels;
-using ScheduleUnifier.Parsing.TableOpeners;
 
 namespace ScheduleUnifier.Parsing.TableParsers
 {
     public class TableParser : ITableParser
     {
         private readonly string[] headerValues = new[] { "день", "час", "дисципліна", "група", "тижні", "аудиторія" };
-
         private readonly ITable table;
-        private readonly IFacultyAndSpecializationParser facultyAndSpecializationParser;
-        private int lastNotEmptyRow;
 
-        public TableParser(ITableOpener tableOpener)
+        private int lastNotEmptyRow;
+        private int headerRowIndex;
+        private bool? isTarget;
+
+        public TableParser(ITable table)
         {
-            table = tableOpener.Table;
-            facultyAndSpecializationParser = tableOpener.FacultyAndSpecializationParser;
+            this.table = table;
         }
 
-        public ParsedTable Parse()
+        public bool IsTargetTable()
         {
-            this.lastNotEmptyRow = table.GetLastNotEmptyRow();
-            int headerRowIndex = FindHeaderRow();
-            var parsedTable = new ParsedTable();
-            (parsedTable.Faculty, parsedTable.Specializations) = facultyAndSpecializationParser.Parse();
-            parsedTable.Rows = ParseRows(headerRowIndex);
-            return parsedTable;
+            try
+            {
+                this.lastNotEmptyRow = table.GetLastNotEmptyRow();
+                headerRowIndex = FindHeaderRow();
+                isTarget = true;
+                return isTarget.Value;
+            }
+            catch(NotFoundHeaderException)
+            {
+                isTarget = false;
+                return isTarget.Value;
+            }
+        }
+
+        public IEnumerable<ParsedRow> ParseRows()
+        {
+            if (!isTarget.HasValue)
+            {
+                IsTargetTable();
+            }
+
+            if(!isTarget!.Value)
+            {
+                throw new NotFoundHeaderException();
+            }
+
+            return ParseRows(headerRowIndex);
         }
 
         private List<ParsedRow> ParseRows(int headerRowIndex)
@@ -37,9 +56,9 @@ namespace ScheduleUnifier.Parsing.TableParsers
             string? lastDay = null;
             string? lastTime = null;
 
-            for (int row = headerRowIndex; row <= lastNotEmptyRow; row++)
+            for (int row = headerRowIndex + 1; row <= lastNotEmptyRow; row++)
             {
-                if (IsNotEmptyCell(row, 0))
+                if (table.IsNotEmptyCell(row, 0))
                 {
                     lastDay = table[row, 0];
                 }
@@ -48,7 +67,7 @@ namespace ScheduleUnifier.Parsing.TableParsers
                     throw new MissingSavedDayException(row);
                 }
 
-                if (IsNotEmptyCell(row, 1))
+                if (table.IsNotEmptyCell(row, 1))
                 {
                     lastTime = table[row, 1];
                 }
@@ -72,7 +91,7 @@ namespace ScheduleUnifier.Parsing.TableParsers
         {
             var parsedValues = new List<string>();
 
-            for (int col = 2; IsNotEmptyCell(row, col); col++)
+            for (int col = 2; table.IsNotEmptyCell(row, col); col++)
             {
                 parsedValues.Add(table[row, col]);
             }
@@ -93,11 +112,6 @@ namespace ScheduleUnifier.Parsing.TableParsers
             };
         }
 
-        private bool IsNotEmptyCell(int row, int col)
-        {
-            return !string.IsNullOrWhiteSpace(table[row, col]);
-        }
-
         private int FindHeaderRow()
         {
             int startRow = 0;
@@ -110,7 +124,7 @@ namespace ScheduleUnifier.Parsing.TableParsers
                 }
             }
 
-            return startRow + 1;
+            return startRow;
         }
 
         private bool IsHeaderRow(int row)

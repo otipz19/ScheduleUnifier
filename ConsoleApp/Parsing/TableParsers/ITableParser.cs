@@ -4,6 +4,8 @@ namespace ScheduleUnifier.Parsing.TableParsers
 {
     public interface ITableParser
     {
-        ParsedTable Parse();
+        public bool IsTargetTable();
+
+        public IEnumerable<ParsedRow> ParseRows();
     }
 }

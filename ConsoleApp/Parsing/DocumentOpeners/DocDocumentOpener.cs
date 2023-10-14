@@ -6,13 +6,15 @@ using NPOI.HWPF.UserModel;
 
 namespace ScheduleUnifier.Parsing.TableOpeners
 {
-    internal class DocTableOpener : BaseTableOpener, ITableOpener
+    internal class DocDocumentOpener : BaseDocumentOpener, IDocumentOpener
     {
-        public DocTableOpener(string filePath) : base(filePath)
+        private List<ITable> tables = new List<ITable>();
+
+        public DocDocumentOpener(string filePath) : base(filePath)
         {
         }
 
-        public ITable Table { get; private set; }
+        public IEnumerable<ITable> Tables => tables;
 
         public IFacultyAndSpecializationParser FacultyAndSpecializationParser { get; private set; }
 
@@ -20,11 +22,12 @@ namespace ScheduleUnifier.Parsing.TableOpeners
         {
             HWPFDocument doc = new HWPFDocument(new FileStream(filePath, FileMode.Open));
             TableIterator tableIterator = new TableIterator(doc.GetRange());
-            if (tableIterator.HasNext())
+            while(tableIterator.HasNext())
             {
-                Table = new DocTable(tableIterator.Next());
+                tables.Add(new DocTable(tableIterator.Next()));
             }
-            else
+
+            if(!tables.Any())
             {
                 throw new NotFoundTableException(filePath);
             }

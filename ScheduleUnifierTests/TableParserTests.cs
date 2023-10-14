@@ -1,8 +1,7 @@
 ﻿using ScheduleUnifier.Parsing.Exceptions;
-using ScheduleUnifier.Parsing.Exceptions;
 using ScheduleUnifier.Parsing.Models;
+using ScheduleUnifier.Parsing.TableModels;
 using ScheduleUnifier.Parsing.TableParsers;
-using ScheduleUnifierTests.Mocks;
 
 namespace ScheduleUnifierTests
 {
@@ -12,7 +11,6 @@ namespace ScheduleUnifierTests
         [Test, Category("Positive")]
         public void Parse_NotFirstHeader_ReturnsValidParsedTable()
         {
-            //Arrange
             var tableMock = new TableMock(new string[,]
             {
                 { "", "", "", "", "", "" },
@@ -27,12 +25,7 @@ namespace ScheduleUnifierTests
                 { "Day-7", "Time-7", "7", "7", "7", "7" },
                 { "Day-8", "Time-8", "8", "8", "8", "8" }
             });
-            var facultyParserMock = new FacultyAndSpecializationParserMock();
-            var openerMock = new TableOpenerMock(tableMock, facultyParserMock);
-            var parser = new TableParser(openerMock);
 
-            string expectedFaculty = facultyParserMock.Parse().faculty;
-            string[] expectedSpecializations = facultyParserMock.Parse().specializations.ToArray();
             ParsedRow[] expectedRows = new[]
             {
                 CreateParsedRow("Day-1", "Time-1", 1),
@@ -45,31 +38,12 @@ namespace ScheduleUnifierTests
                 CreateParsedRow("Day-8", "Time-8", 8),
             };
 
-            //Act
-            ParsedTable parsedTable = parser.Parse();
-
-            //Assert
-            Assert.That(parsedTable.Faculty, Is.EqualTo(expectedFaculty));
-
-            var actualSpecializations = parsedTable.Specializations.ToArray();
-            Assert.That(actualSpecializations.Length, Is.EqualTo(expectedSpecializations.Length));
-            for (int i = 0; i < actualSpecializations.Length; i++)
-            {
-                Assert.That(actualSpecializations[i], Is.EqualTo(expectedSpecializations[i]));
-            }
-
-            var actualRows = parsedTable.Rows.ToArray();
-            Assert.That(actualRows.Length, Is.EqualTo(expectedRows.Length));
-            for (int i = 0; i < actualRows.Length; i++)
-            {
-                Assert.That(actualRows[i], Is.EqualTo(expectedRows[i]));
-            }
+            RunPositiveTest(tableMock, expectedRows);
         }
 
         [Test, Category("Positive")]
         public void Parse_AllDistinctRows_ReturnsValidParsedTable()
         {
-            //Arrange
             var tableMock = new TableMock(new string[,]
             {
                 { "День", "", "", "", "", "" },
@@ -82,12 +56,7 @@ namespace ScheduleUnifierTests
                 { "Day-7", "Time-7", "7", "7", "7", "7" },
                 { "Day-8", "Time-8", "8", "8", "8", "8" }
             });
-            var facultyParserMock = new FacultyAndSpecializationParserMock();
-            var openerMock = new TableOpenerMock(tableMock, facultyParserMock);
-            var parser = new TableParser(openerMock);
 
-            string expectedFaculty = facultyParserMock.Parse().faculty;
-            string[] expectedSpecializations = facultyParserMock.Parse().specializations.ToArray();
             ParsedRow[] expectedRows = new[]
             {
                 CreateParsedRow("Day-1", "Time-1", 1),
@@ -100,31 +69,12 @@ namespace ScheduleUnifierTests
                 CreateParsedRow("Day-8", "Time-8", 8),
             };
 
-            //Act
-            ParsedTable parsedTable = parser.Parse();
-
-            //Assert
-            Assert.That(parsedTable.Faculty, Is.EqualTo(expectedFaculty));
-
-            var actualSpecializations = parsedTable.Specializations.ToArray();
-            Assert.That(actualSpecializations.Length, Is.EqualTo(expectedSpecializations.Length));
-            for (int i = 0; i < actualSpecializations.Length; i++)
-            {
-                Assert.That(actualSpecializations[i], Is.EqualTo(expectedSpecializations[i]));
-            }
-
-            var actualRows = parsedTable.Rows.ToArray();
-            Assert.That(actualRows.Length, Is.EqualTo(expectedRows.Length));
-            for (int i = 0; i < actualRows.Length; i++)
-            {
-                Assert.That(actualRows[i], Is.EqualTo(expectedRows[i]));
-            }
+            RunPositiveTest(tableMock, expectedRows);
         }
 
         [Test, Category("Positive")]
         public void Parse_ValidTable_ReturnsValidParsedTable()
         {
-            //Arrange
             var tableMock = new TableMock(new string[,]
             {
                 { "День", "", "", "", "", "" },
@@ -137,12 +87,7 @@ namespace ScheduleUnifierTests
                 { "", "Time-4", "7", "7", "7", "7" },
                 { "", "", "8", "8", "8", "8" }
             });
-            var facultyParserMock = new FacultyAndSpecializationParserMock();
-            var openerMock = new TableOpenerMock(tableMock, facultyParserMock);
-            var parser = new TableParser(openerMock);
 
-            string expectedFaculty = facultyParserMock.Parse().faculty;
-            string[] expectedSpecializations = facultyParserMock.Parse().specializations.ToArray();
             ParsedRow[] expectedRows = new[]
             {
                 CreateParsedRow("Day-1", "Time-1", 1),
@@ -155,25 +100,7 @@ namespace ScheduleUnifierTests
                 CreateParsedRow("Day-2", "Time-4", 8),
             };
 
-            //Act
-            ParsedTable parsedTable = parser.Parse();
-
-            //Assert
-            Assert.That(parsedTable.Faculty, Is.EqualTo(expectedFaculty));
-
-            var actualSpecializations = parsedTable.Specializations.ToArray();
-            Assert.That(actualSpecializations.Length, Is.EqualTo(expectedSpecializations.Length));
-            for (int i = 0; i < actualSpecializations.Length; i++)
-            {
-                Assert.That(actualSpecializations[i], Is.EqualTo(expectedSpecializations[i]));
-            }
-
-            var actualRows = parsedTable.Rows.ToArray();
-            Assert.That(actualRows.Length, Is.EqualTo(expectedRows.Length));
-            for (int i = 0; i < actualRows.Length; i++)
-            {
-                Assert.That(actualRows[i], Is.EqualTo(expectedRows[i]));
-            }
+            RunPositiveTest(tableMock, expectedRows);
         }
 
         [Test, Category("Positive")]
@@ -192,12 +119,7 @@ namespace ScheduleUnifierTests
                 { "", "Time-4", "7", "7", "7", "7" },
                 { "", "", "", "", "", "" }
             });
-            var facultyParserMock = new FacultyAndSpecializationParserMock();
-            var openerMock = new TableOpenerMock(tableMock, facultyParserMock);
-            var parser = new TableParser(openerMock);
 
-            string expectedFaculty = facultyParserMock.Parse().faculty;
-            string[] expectedSpecializations = facultyParserMock.Parse().specializations.ToArray();
             ParsedRow[] expectedRows = new[]
             {
                 CreateParsedRow("Day-1", "Time-1", 1),
@@ -206,31 +128,12 @@ namespace ScheduleUnifierTests
                 CreateParsedRow("Day-2", "Time-4", 7),
             };
 
-            //Act
-            ParsedTable parsedTable = parser.Parse();
-
-            //Assert
-            Assert.That(parsedTable.Faculty, Is.EqualTo(expectedFaculty));
-
-            var actualSpecializations = parsedTable.Specializations.ToArray();
-            Assert.That(actualSpecializations.Length, Is.EqualTo(expectedSpecializations.Length));
-            for (int i = 0; i < actualSpecializations.Length; i++)
-            {
-                Assert.That(actualSpecializations[i], Is.EqualTo(expectedSpecializations[i]));
-            }
-
-            var actualRows = parsedTable.Rows.ToArray();
-            Assert.That(actualRows.Length, Is.EqualTo(expectedRows.Length));
-            for (int i = 0; i < actualRows.Length; i++)
-            {
-                Assert.That(actualRows[i], Is.EqualTo(expectedRows[i]));
-            }
+            RunPositiveTest(tableMock, expectedRows);
         }
 
         [Test, Category("Negative")]
-        public void Parse_MissingSavedDay_ThrowsException()
+        public void IsTargetTable_MissingSavedDay_ThrowsException()
         {
-            //Arrange
             var tableMock = new TableMock(new string[,]
             {
                 { "День", "", "", "", "", "" },
@@ -243,18 +146,14 @@ namespace ScheduleUnifierTests
                 { "Day-7", "Time-7", "7", "7", "7", "7" },
                 { "Day-8", "Time-8", "8", "8", "8", "8" }
             });
-            var facultyParserMock = new FacultyAndSpecializationParserMock();
-            var openerMock = new TableOpenerMock(tableMock, facultyParserMock);
-            var parser = new TableParser(openerMock);
+            var parser = new TableParser(tableMock);
 
-            //Assert
-            Assert.Throws<MissingSavedDayException>(() => parser.Parse());
+            Assert.Throws<MissingSavedDayException>(() => parser.ParseRows());
         }
 
         [Test, Category("Negative")]
         public void Parse_MissingSavedTime_ThrowsException()
         {
-            //Arrange
             var tableMock = new TableMock(new string[,]
             {
                 { "День", "", "", "", "", "" },
@@ -267,29 +166,40 @@ namespace ScheduleUnifierTests
                 { "Day-7", "Time-7", "7", "7", "7", "7" },
                 { "Day-8", "Time-8", "8", "8", "8", "8" }
             });
-            var facultyParserMock = new FacultyAndSpecializationParserMock();
-            var openerMock = new TableOpenerMock(tableMock, facultyParserMock);
-            var parser = new TableParser(openerMock);
+            var parser = new TableParser(tableMock);
 
-            //Assert
-            Assert.Throws<MissingSavedTimeException>(() => parser.Parse());
+            Assert.Throws<MissingSavedTimeException>(() => parser.ParseRows());
         }
 
         [Test, Category("Negative")]
-        public void Parse_InvalidTableWithoutHeader_ThrowsException()
+        public void Parse_InvalidTableWithoutHeader_ReturnsFalse()
         {
-            //Arrange
             var tableMock = new TableMock(new string[,]
             {
                 { "1", "1", "1", "1", "1", "1" },
                 { "2", "2", "2", "2", "2", "2" },
             });
-            var facultyParserMock = new FacultyAndSpecializationParserMock();
-            var openerMock = new TableOpenerMock(tableMock, facultyParserMock);
-            var parser = new TableParser(openerMock);
+            var parser = new TableParser(tableMock);
+
+
+            Assert.IsFalse(parser.IsTargetTable());
+        }
+
+        private void RunPositiveTest(ITable tableMock, ParsedRow[] expectedRows)
+        {
+            //Arrange
+            var parser = new TableParser(tableMock);
+
+            //Act
+            IEnumerable<ParsedRow> parsedRows = parser.ParseRows();
 
             //Assert
-            Assert.Throws<NotFoundHeaderException>(() => parser.Parse());
+            var actualRows = parsedRows.ToArray();
+            Assert.That(actualRows, Has.Length.EqualTo(expectedRows.Length));
+            for (int i = 0; i < actualRows.Length; i++)
+            {
+                Assert.That(actualRows[i], Is.EqualTo(expectedRows[i]));
+            }
         }
 
         private ParsedRow CreateParsedRow(string day, string time, int otherValues)

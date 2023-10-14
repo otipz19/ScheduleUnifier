@@ -3,9 +3,9 @@ using ScheduleUnifier.Parsing.TableModels;
 
 namespace ScheduleUnifier.Parsing.TableOpeners
 {
-    public interface ITableOpener
+    public interface IDocumentOpener
     {
-        public ITable Table { get; }
+        public IEnumerable<ITable> Tables { get; }
 
         public IFacultyAndSpecializationParser FacultyAndSpecializationParser { get; }
     }

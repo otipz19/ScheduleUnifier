@@ -5,20 +5,20 @@ using ScheduleUnifier.Parsing.FacultyAndSpecializationParsers;
 
 namespace ScheduleUnifier.Parsing.TableOpeners
 {
-    internal class DocxTableOpener : BaseTableOpener, ITableOpener
+    internal class DocxDocumentOpener : BaseDocumentOpener, IDocumentOpener
     {
         private WordprocessingDocument doc = default!;
 
-        public DocxTableOpener(string filePath) : base(filePath) { }
+        public DocxDocumentOpener(string filePath) : base(filePath) { }
 
-        public ITable Table { get; private set; }
+        public IEnumerable<ITable> Tables { get; private set; }
 
         public IFacultyAndSpecializationParser FacultyAndSpecializationParser { get; private set; }
 
         protected override void OpenDocument(string filePath)
         {
             doc = WordprocessingDocument.Open(filePath, false);
-            Table = new DocxTable(doc.MainDocumentPart!.Document.Body!.Elements<Table>().First());
+            Tables = doc.MainDocumentPart!.Document.Body!.Elements<Table>().Select(t => new DocxTable(t)).ToArray();
             FacultyAndSpecializationParser = new DocxFacultyAndSpecializationParser(doc);
         }
 

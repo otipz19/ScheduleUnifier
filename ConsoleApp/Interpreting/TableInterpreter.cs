@@ -6,7 +6,7 @@ namespace ScheduleUnifier.Interpreting
 {
     public class TableInterpreter : ITableInterpreter
     {
-        public IEnumerable<RecordModel> Interpret(ParsedTable parsedTable)
+        public IEnumerable<RecordModel> Interpret(ParsedDocument parsedTable)
         {
             if (parsedTable.Specializations.Count() == 1)
             {
@@ -26,7 +26,7 @@ namespace ScheduleUnifier.Interpreting
             }
         }
 
-        private IEnumerable<RecordModel> InterpretSpecialization(ParsedTable parsedTable, ParsedRow parsedRow)
+        private IEnumerable<RecordModel> InterpretSpecialization(ParsedDocument parsedTable, ParsedRow parsedRow)
         {
             var records = new List<RecordModel>();
 

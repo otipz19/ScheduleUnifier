@@ -2,9 +2,9 @@
 
 namespace ScheduleUnifier.Parsing.TableOpeners
 {
-    internal abstract class BaseTableOpener
+    internal abstract class BaseDocumentOpener
     {
-        public BaseTableOpener(string filePath)
+        public BaseDocumentOpener(string filePath)
         {
             TryOpenDocument(filePath);
         }

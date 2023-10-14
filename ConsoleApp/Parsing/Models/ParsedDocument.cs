@@ -1,6 +1,6 @@
 ﻿namespace ScheduleUnifier.Parsing.Models
 {
-    public class ParsedTable
+    public class ParsedDocument
     {
         public string Faculty { get; set; } = default!;
 

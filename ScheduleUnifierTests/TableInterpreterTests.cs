@@ -26,7 +26,7 @@ namespace ScheduleUnifierTests
         [Test, Category("Negative")]
         public void Interpret_NoSpecializations_ThrowsException()
         {
-            var data = new ParsedTable()
+            var data = new ParsedDocument()
             {
                 Specializations = Enumerable.Empty<string>(),
             };
@@ -39,7 +39,7 @@ namespace ScheduleUnifierTests
         {
             const string Specialization = "spec1";
 
-            var data = new ParsedTable()
+            var data = new ParsedDocument()
             {
                 Faculty = DefaultFaculty,
                 Specializations = new string[] { Specialization },
@@ -57,7 +57,7 @@ namespace ScheduleUnifierTests
         {
             const string Specialization = "spec1";
 
-            var data = new ParsedTable()
+            var data = new ParsedDocument()
             {
                 Faculty = DefaultFaculty,
                 Specializations = new string[] { Specialization },
@@ -78,7 +78,7 @@ namespace ScheduleUnifierTests
         {
             const string Specialization = "spec1";
 
-            var data = new ParsedTable()
+            var data = new ParsedDocument()
             {
                 Faculty = DefaultFaculty,
                 Specializations = new string[] { Specialization },
@@ -100,7 +100,7 @@ namespace ScheduleUnifierTests
         {
             string[] specializations = Enumerable.Range(1, 3).Select(i => $"spec{i}").ToArray();
 
-            var data = new ParsedTable()
+            var data = new ParsedDocument()
             {
                 Faculty = DefaultFaculty,
                 Specializations = specializations,
@@ -127,7 +127,7 @@ namespace ScheduleUnifierTests
         {
             string[] specializations = Enumerable.Range(1, 3).Select(i => $"spec{i}").ToArray();
 
-            var data = new ParsedTable()
+            var data = new ParsedDocument()
             {
                 Faculty = DefaultFaculty,
                 Specializations = specializations,
