@@ -1,4 +1,7 @@
 ﻿using ScheduleUnifier.Interpreting.Models;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Unicode;
 
 namespace ScheduleUnifier.Serialization.Models
 {
@@ -12,6 +15,16 @@ namespace ScheduleUnifier.Serialization.Models
             }
 
             this[record.Faculty].Add(record);
+        }
+
+        public string ToJsonString()
+        {
+            var options = new JsonSerializerOptions()
+            {
+                WriteIndented = true,
+                Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+            };
+            return JsonSerializer.Serialize<Schedule>(this, options);
         }
     }
 }

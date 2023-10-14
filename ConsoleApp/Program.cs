@@ -1,14 +1,11 @@
-﻿using ScheduleUnifier.Interpreting;
+﻿using ConsoleApp.Serialization;
+using ScheduleUnifier.Interpreting;
 using ScheduleUnifier.Interpreting.Models;
 using ScheduleUnifier.Parsing.Converters;
 using ScheduleUnifier.Parsing.Exceptions;
 using ScheduleUnifier.Parsing.Models;
 using ScheduleUnifier.Parsing.TableOpeners;
 using ScheduleUnifier.Parsing.TableParsers;
-using ScheduleUnifier.Serialization.Models;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.Unicode;
 
 namespace ScheduleUnifier
 {
@@ -19,7 +16,7 @@ namespace ScheduleUnifier
         private static string FullOutputFilePath => Path.Join(FullOutputDirectoryPath, "output.json");
 
         private static readonly TableInterpreter interpreter = new TableInterpreter();
-        private static readonly Schedule schedule = new Schedule();
+        private static readonly ScheduleHandler scheduleHandler = new ScheduleHandler();
 
         static void Main(string[] args)
         {
@@ -33,7 +30,7 @@ namespace ScheduleUnifier
                     ProcessTableInFile(file);
                 }
 
-                SerializeSchedule();
+                scheduleHandler.Serialize(FullOutputDirectoryPath, FullOutputFilePath);
             }
             catch (Exception ex)
             {
@@ -49,7 +46,7 @@ namespace ScheduleUnifier
 
             foreach (var record in records)
             {
-                schedule.Add(record);
+                scheduleHandler.Schedule.Add(record);
             }
         }
 
@@ -63,23 +60,6 @@ namespace ScheduleUnifier
         private static ITableOpener ResolveTableOpenerType((string filePath, bool isExcel) file)
         {
             return file.isExcel ? new ExcelTableOpener(file.filePath) : new DocxTableOpener(file.filePath);
-        }
-
-        private static void SerializeSchedule()
-        {
-            var options = new JsonSerializerOptions()
-            {
-                WriteIndented = true,
-                Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
-            };
-            string json = JsonSerializer.Serialize<Schedule>(schedule, options);
-
-            if (!Directory.Exists(FullOutputDirectoryPath))
-            {
-                Directory.CreateDirectory(FullOutputDirectoryPath);
-            }
-
-            File.WriteAllText(FullOutputFilePath, json);
         }
 
         private static (string filePath, bool isExcel)[] GetFilesToParse()
