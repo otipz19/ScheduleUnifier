@@ -2,7 +2,7 @@
 
 namespace ScheduleUnifier.Serialization.Models
 {
-    public class GroupInfo
+    public record GroupInfo
     {
         [JsonPropertyName("Назва")]
         public string Name { get; set; } = default!;

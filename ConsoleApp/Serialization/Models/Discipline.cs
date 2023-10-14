@@ -2,7 +2,7 @@
 
 namespace ScheduleUnifier.Serialization.Models
 {
-    public class Discipline : List<GroupInfo>
+    public class Discipline : HashSet<GroupInfo>
     {
         public void Add(RecordModel record)
         {
@@ -15,7 +15,10 @@ namespace ScheduleUnifier.Serialization.Models
                 Weeks = record.Weeks,
             };
 
-            this.Add(group);
+            if (!this.Contains(group))
+            {
+                this.Add(group);
+            }
         }
     }
 }

@@ -53,7 +53,7 @@ namespace ScheduleUnifierTests
         }
 
         [Test, Category("Positive")]
-        public void Interpret_OneSpecialization_Succeeds()
+        public void Interpret_OneSpecialization_CreatesOneRecord()
         {
             const string Specialization = "spec1";
 
@@ -75,7 +75,7 @@ namespace ScheduleUnifierTests
         }
 
         [Test, Category("Positive")]
-        public void Interpret_ThreeSpecialization_RowsWithSingleSpecialization_Succeeds()
+        public void Interpret_ThreeSpecializations_RowsWithSingleSpecialization_CreatesOneRecordForEachRow()
         {
             string[] specializations = Enumerable.Range(1, 3).Select(i => $"spec{i}").ToArray();
 
@@ -102,7 +102,7 @@ namespace ScheduleUnifierTests
         }
 
         [Test, Category("Positive")]
-        public void Interpret_ThreeSpecialization_RowsWithMultipleSpecializations_Succeeds()
+        public void Interpret_ThreeSpecializations_RowsWithMultipleSpecializations_CreatesMultimpleRecordsForEachRow()
         {
             string[] specializations = Enumerable.Range(1, 3).Select(i => $"spec{i}").ToArray();
 
