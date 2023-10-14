@@ -1,6 +1,6 @@
-﻿using ConsoleApp.Parsing.Exceptions;
+﻿using ScheduleUnifier.Parsing.Exceptions;
 
-namespace ConsoleApp.Parsing.TableOpeners
+namespace ScheduleUnifier.Parsing.TableOpeners
 {
     internal abstract class BaseTableOpener
     {

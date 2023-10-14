@@ -1,8 +1,8 @@
-﻿using ConsoleApp.Interpreting.Models;
+﻿using ScheduleUnifier.Interpreting.Models;
 
-namespace ConsoleApp.Serialization.Models
+namespace ScheduleUnifier.Serialization.Models
 {
-    internal class Schedule : Dictionary<string, Faculty>
+    public class Schedule : Dictionary<string, Faculty>
     {
         public void Add(RecordModel record)
         {

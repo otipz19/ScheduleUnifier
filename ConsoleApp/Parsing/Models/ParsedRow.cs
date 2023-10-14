@@ -1,6 +1,6 @@
-﻿namespace ConsoleApp.Parsing.Models
+﻿namespace ScheduleUnifier.Parsing.Models
 {
-    internal class ParsedRow
+    public record ParsedRow
     {
         public string Day { get; set; } = default!;
 

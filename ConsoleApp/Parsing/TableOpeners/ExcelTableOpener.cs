@@ -1,8 +1,8 @@
-﻿using ConsoleApp.Parsing.FacultyAndSpecializationParsers;
-using ConsoleApp.Parsing.TableModels;
+﻿using ScheduleUnifier.Parsing.FacultyAndSpecializationParsers;
+using ScheduleUnifier.Parsing.TableModels;
 using OfficeOpenXml;
 
-namespace ConsoleApp.Parsing.TableOpeners
+namespace ScheduleUnifier.Parsing.TableOpeners
 {
     internal class ExcelTableOpener : BaseTableOpener, ITableOpener
     {

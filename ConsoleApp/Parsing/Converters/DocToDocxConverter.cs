@@ -2,7 +2,7 @@
 using NPOI.HWPF;
 using NPOI.XWPF.UserModel;
 
-namespace ConsoleApp.Parsing.Converters
+namespace ScheduleUnifier.Parsing.Converters
 {
     internal class DocToDocxConverter : IDocToDocxConverter
     {

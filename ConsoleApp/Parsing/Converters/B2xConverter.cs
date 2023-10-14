@@ -4,7 +4,7 @@ using b2xtranslator.StructuredStorage.Reader;
 using b2xtranslator.WordprocessingMLMapping;
 using static b2xtranslator.OpenXmlLib.OpenXmlPackage;
 
-namespace ConsoleApp.Parsing.Converters
+namespace ScheduleUnifier.Parsing.Converters
 {
     internal class B2xConverter : IDocToDocxConverter
     {

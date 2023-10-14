@@ -1,6 +1,6 @@
 ﻿using OfficeOpenXml;
 
-namespace ConsoleApp.Parsing.TableModels
+namespace ScheduleUnifier.Parsing.TableModels
 {
     internal class ExcelTable : ITable
     {

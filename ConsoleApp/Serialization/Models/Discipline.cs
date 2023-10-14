@@ -1,8 +1,8 @@
-﻿using ConsoleApp.Interpreting.Models;
+﻿using ScheduleUnifier.Interpreting.Models;
 
-namespace ConsoleApp.Serialization.Models
+namespace ScheduleUnifier.Serialization.Models
 {
-    internal class Discipline : List<GroupInfo>
+    public class Discipline : List<GroupInfo>
     {
         public void Add(RecordModel record)
         {

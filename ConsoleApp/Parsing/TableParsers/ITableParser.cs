@@ -1,6 +1,6 @@
-﻿using ConsoleApp.Parsing.Models;
+﻿using ScheduleUnifier.Parsing.Models;
 
-namespace ConsoleApp.Parsing.TableParsers
+namespace ScheduleUnifier.Parsing.TableParsers
 {
     internal interface ITableParser
     {

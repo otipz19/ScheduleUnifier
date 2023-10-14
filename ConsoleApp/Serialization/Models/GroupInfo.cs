@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ConsoleApp.Serialization.Models
+namespace ScheduleUnifier.Serialization.Models
 {
-    internal class GroupInfo
+    public class GroupInfo
     {
         [JsonPropertyName("Назва")]
         public string Name { get; set; } = default!;

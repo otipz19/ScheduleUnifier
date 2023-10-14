@@ -1,4 +1,4 @@
-﻿namespace ConsoleApp.Parsing.Converters
+﻿namespace ScheduleUnifier.Parsing.Converters
 {
     internal interface IDocToDocxConverter
     {

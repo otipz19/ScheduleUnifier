@@ -1,6 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Wordprocessing;
 
-namespace ConsoleApp.Parsing.TableModels
+namespace ScheduleUnifier.Parsing.TableModels
 {
     internal class DocxTable : ITable
     {

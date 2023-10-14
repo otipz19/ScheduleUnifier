@@ -1,6 +1,6 @@
-﻿namespace ConsoleApp.Parsing.Models
+﻿namespace ScheduleUnifier.Parsing.Models
 {
-    internal class ParsedTable
+    public class ParsedTable
     {
         public string Faculty { get; set; } = default!;
 

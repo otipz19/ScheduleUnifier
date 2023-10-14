@@ -1,9 +1,9 @@
-﻿using ConsoleApp.Parsing.FacultyAndSpecializationParsers;
-using ConsoleApp.Parsing.Models;
-using ConsoleApp.Parsing.TableModels;
-using ConsoleApp.Parsing.TableOpeners;
+﻿using ScheduleUnifier.Parsing.FacultyAndSpecializationParsers;
+using ScheduleUnifier.Parsing.Models;
+using ScheduleUnifier.Parsing.TableModels;
+using ScheduleUnifier.Parsing.TableOpeners;
 
-namespace ConsoleApp.Parsing.TableParsers
+namespace ScheduleUnifier.Parsing.TableParsers
 {
     internal class TableParser : ITableParser
     {

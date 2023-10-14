@@ -1,6 +1,6 @@
 ﻿using NPOI.HWPF.UserModel;
 
-namespace ConsoleApp.Parsing.TableModels
+namespace ScheduleUnifier.Parsing.TableModels
 {
     internal class DocTable : ITable
     {

@@ -1,6 +1,6 @@
-﻿namespace ConsoleApp.Interpreting.Models
+﻿namespace ScheduleUnifier.Interpreting.Models
 {
-    internal class RecordModel
+    public class RecordModel
     {
         public string Faculty { get; set; } = default!;
 

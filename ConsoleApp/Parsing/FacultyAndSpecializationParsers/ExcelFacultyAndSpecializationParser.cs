@@ -1,8 +1,8 @@
-﻿using ConsoleApp.Parsing.Exceptions;
-using ConsoleApp.Parsing.TableModels;
+﻿using ScheduleUnifier.Parsing.Exceptions;
+using ScheduleUnifier.Parsing.TableModels;
 using System.Text.RegularExpressions;
 
-namespace ConsoleApp.Parsing.FacultyAndSpecializationParsers
+namespace ScheduleUnifier.Parsing.FacultyAndSpecializationParsers
 {
     internal class ExcelFacultyAndSpecializationParser : IFacultyAndSpecializationParser
     {

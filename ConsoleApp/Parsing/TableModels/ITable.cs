@@ -1,4 +1,4 @@
-﻿namespace ConsoleApp.Parsing.TableModels
+﻿namespace ScheduleUnifier.Parsing.TableModels
 {
     internal interface ITable
     {

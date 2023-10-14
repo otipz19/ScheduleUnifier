@@ -1,10 +1,10 @@
-﻿using ConsoleApp.Parsing.Exceptions;
-using ConsoleApp.Parsing.FacultyAndSpecializationParsers;
-using ConsoleApp.Parsing.TableModels;
+﻿using ScheduleUnifier.Parsing.Exceptions;
+using ScheduleUnifier.Parsing.FacultyAndSpecializationParsers;
+using ScheduleUnifier.Parsing.TableModels;
 using NPOI.HWPF;
 using NPOI.HWPF.UserModel;
 
-namespace ConsoleApp.Parsing.TableOpeners
+namespace ScheduleUnifier.Parsing.TableOpeners
 {
     internal class DocTableOpener : BaseTableOpener, ITableOpener
     {

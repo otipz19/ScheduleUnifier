@@ -1,9 +1,9 @@
-﻿using ConsoleApp.Parsing.Exceptions;
+﻿using ScheduleUnifier.Parsing.Exceptions;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Text.RegularExpressions;
 
-namespace ConsoleApp.Parsing.FacultyAndSpecializationParsers
+namespace ScheduleUnifier.Parsing.FacultyAndSpecializationParsers
 {
     internal class DocxFacultyAndSpecializationParser : IFacultyAndSpecializationParser
     {

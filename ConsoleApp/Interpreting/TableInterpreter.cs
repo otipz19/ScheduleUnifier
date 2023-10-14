@@ -1,10 +1,10 @@
-﻿using ConsoleApp.Interpreting.Models;
-using ConsoleApp.Parsing.Models;
+﻿using ScheduleUnifier.Interpreting.Models;
+using ScheduleUnifier.Parsing.Models;
 using System.Text.RegularExpressions;
 
-namespace ConsoleApp.Interpreting
+namespace ScheduleUnifier.Interpreting
 {
-    internal class TableInterpreter
+    public class TableInterpreter : ITableInterpreter
     {
         public IEnumerable<RecordModel> Interpret(ParsedTable parsedTable)
         {
@@ -39,7 +39,7 @@ namespace ConsoleApp.Interpreting
                     .Select(a => a.Trim('(', ')', '.'))
                     .ToArray();
 
-                foreach(string alias in aliases)
+                foreach (string alias in aliases)
                 {
                     string? specialization = parsedTable.Specializations
                         .FirstOrDefault(s => s.Contains(alias, StringComparison.InvariantCultureIgnoreCase));
@@ -82,7 +82,7 @@ namespace ConsoleApp.Interpreting
 
         private string FormatClassroom(string classroom)
         {
-            if(classroom.Equals("д", StringComparison.InvariantCultureIgnoreCase))
+            if (classroom.Equals("д", StringComparison.InvariantCultureIgnoreCase))
             {
                 return "Дистанційно";
             }
@@ -91,7 +91,7 @@ namespace ConsoleApp.Interpreting
 
         private string FormatGroup(string group)
         {
-            if(group.Contains("лекція", StringComparison.InvariantCultureIgnoreCase))
+            if (group.Contains("лекція", StringComparison.InvariantCultureIgnoreCase))
             {
                 return "Лекція";
             }
@@ -100,7 +100,7 @@ namespace ConsoleApp.Interpreting
                 //Regex to find any number substring
                 string? groupNum = Regex.Matches(group, "\\d+").Select(m => m.Value).FirstOrDefault();
 
-                if(groupNum is null)
+                if (groupNum is null)
                 {
                     throw new Exception("Invalid group format");
                 }

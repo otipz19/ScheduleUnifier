@@ -1,9 +1,9 @@
-﻿using ConsoleApp.Parsing.TableModels;
+﻿using ScheduleUnifier.Parsing.TableModels;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Packaging;
-using ConsoleApp.Parsing.FacultyAndSpecializationParsers;
+using ScheduleUnifier.Parsing.FacultyAndSpecializationParsers;
 
-namespace ConsoleApp.Parsing.TableOpeners
+namespace ScheduleUnifier.Parsing.TableOpeners
 {
     internal class DocxTableOpener : BaseTableOpener, ITableOpener
     {

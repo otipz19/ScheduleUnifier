@@ -1,16 +1,16 @@
-﻿using ConsoleApp.Interpreting;
-using ConsoleApp.Interpreting.Models;
-using ConsoleApp.Parsing.Converters;
-using ConsoleApp.Parsing.Exceptions;
-using ConsoleApp.Parsing.Models;
-using ConsoleApp.Parsing.TableOpeners;
-using ConsoleApp.Parsing.TableParsers;
-using ConsoleApp.Serialization.Models;
+﻿using ScheduleUnifier.Interpreting;
+using ScheduleUnifier.Interpreting.Models;
+using ScheduleUnifier.Parsing.Converters;
+using ScheduleUnifier.Parsing.Exceptions;
+using ScheduleUnifier.Parsing.Models;
+using ScheduleUnifier.Parsing.TableOpeners;
+using ScheduleUnifier.Parsing.TableParsers;
+using ScheduleUnifier.Serialization.Models;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
 
-namespace ConsoleApp
+namespace ScheduleUnifier
 {
     internal static class Program
     {
