@@ -1,12 +1,13 @@
 ﻿using ScheduleUnifier.Parsing.Exceptions;
 using ScheduleUnifier.Parsing.TableModels;
-using System.Text.RegularExpressions;
 
 namespace ScheduleUnifier.Parsing.FacultyAndSpecializationParsers
 {
     internal class ExcelFacultyAndSpecializationParser : IFacultyAndSpecializationParser
     {
         private readonly ITable table;
+        private readonly FacultyFinder facultyFinder = new FacultyFinder();
+        private readonly SpecializationsFinder specializationsFinder = new SpecializationsFinder();
 
         public ExcelFacultyAndSpecializationParser(ITable table)
         {
@@ -20,22 +21,18 @@ namespace ScheduleUnifier.Parsing.FacultyAndSpecializationParsers
 
             int lastNotEmptyRow = table.GetLastNotEmptyRow();
 
-            for (int row = 1; row < lastNotEmptyRow; row++)
+            for (int row = 0; row < lastNotEmptyRow && (faculty is null || specializations is null); row++)
             {
-                for (int col = 1; !string.IsNullOrWhiteSpace(table[row, col]); col++)
+                for (int col = 0; !string.IsNullOrWhiteSpace(table[row, col]); col++)
                 {
                     string cellText = table[row, col];
-                    if (cellText.Contains("факультет", StringComparison.InvariantCultureIgnoreCase))
+                    if (faculty is null)
                     {
-                        faculty = cellText.Trim();
+                        facultyFinder.TryFind(cellText, out faculty);
                     }
-
-                    else if (cellText.Contains("спеціальність", StringComparison.InvariantCultureIgnoreCase))
+                    if(specializations is null || !specializations.Any())
                     {
-                        //This regex pattern retrieves from string all substrings that contained inside either "" or «» quotes
-                        specializations = Regex.Matches(cellText, "(?<=\"|«)[^\"«]+(?=\"|»)")
-                                .Select(m => m.Value.Trim())
-                                .ToList();
+                        specializationsFinder.TryFind(cellText, out specializations);
                     }
                 }
             }
@@ -45,7 +42,7 @@ namespace ScheduleUnifier.Parsing.FacultyAndSpecializationParsers
                 throw new NotFoundFacultyException();
             }
 
-            if (!specializations.Any())
+            if (specializations is null || !specializations.Any())
             {
                 throw new NotFoundSpecializationsException();
             }

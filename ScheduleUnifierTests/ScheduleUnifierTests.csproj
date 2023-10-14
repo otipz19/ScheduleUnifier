@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ConsoleApp\ConsoleApp.csproj" />
+    <ProjectReference Include="..\ConsoleApp\ScheduleUnifier.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace ConsoleApp.Parsing.Exceptions
+﻿namespace ScheduleUnifier.Parsing.Exceptions
 {
     public abstract class MissingSavedValueException : Exception
     {

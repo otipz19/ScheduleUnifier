@@ -1,5 +1,4 @@
-﻿using ConsoleApp.Parsing.Exceptions;
-using ScheduleUnifier.Parsing.Exceptions;
+﻿using ScheduleUnifier.Parsing.Exceptions;
 using ScheduleUnifier.Parsing.FacultyAndSpecializationParsers;
 using ScheduleUnifier.Parsing.Models;
 using ScheduleUnifier.Parsing.TableModels;
@@ -9,6 +8,8 @@ namespace ScheduleUnifier.Parsing.TableParsers
 {
     public class TableParser : ITableParser
     {
+        private readonly string[] headerValues = new[] { "день", "час", "дисципліна", "група", "тижні", "аудиторія" };
+
         private readonly ITable table;
         private readonly IFacultyAndSpecializationParser facultyAndSpecializationParser;
         private int lastNotEmptyRow;
@@ -100,8 +101,7 @@ namespace ScheduleUnifier.Parsing.TableParsers
         private int FindHeaderRow()
         {
             int startRow = 0;
-            while (!table[startRow, 0]
-                .Equals("День", StringComparison.InvariantCultureIgnoreCase))
+            while (!IsHeaderRow(startRow))
             {
                 startRow++;
                 if(startRow > this.lastNotEmptyRow)
@@ -111,6 +111,13 @@ namespace ScheduleUnifier.Parsing.TableParsers
             }
 
             return startRow + 1;
+        }
+
+        private bool IsHeaderRow(int row)
+        {
+            return Enumerable.Range(0, 6)
+                .Any(i => !string.IsNullOrWhiteSpace(table[row, i]) 
+                    && headerValues[i].Contains(table[row, i], StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }
