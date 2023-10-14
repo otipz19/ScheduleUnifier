@@ -53,6 +53,27 @@ namespace ScheduleUnifierTests
         }
 
         [Test, Category("Positive")]
+        public void Interpret_DistantClassroom_ProperlyClassroom()
+        {
+            const string Specialization = "spec1";
+
+            var data = new ParsedTable()
+            {
+                Faculty = DefaultFaculty,
+                Specializations = new string[] { Specialization },
+                Rows = new ParsedRow[]
+                {
+                    CreateDefaultParsedRow(Specialization) with {Classroom = "д"},
+                },
+            };
+            
+            var records = interpreter.Interpret(data);
+
+            Assert.That(records.Count(), Is.EqualTo(1));
+            Assert.That(records.First().Classroom, Is.EqualTo("Дистанційно"));
+        }
+
+        [Test, Category("Positive")]
         public void Interpret_OneSpecialization_CreatesOneRecord()
         {
             const string Specialization = "spec1";
