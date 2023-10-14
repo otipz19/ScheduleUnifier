@@ -1,4 +1,5 @@
-﻿using ScheduleUnifier.Parsing.FacultyAndSpecializationParsers;
+﻿using ConsoleApp.Parsing.Exceptions;
+using ScheduleUnifier.Parsing.FacultyAndSpecializationParsers;
 using ScheduleUnifier.Parsing.Models;
 using ScheduleUnifier.Parsing.TableModels;
 using ScheduleUnifier.Parsing.TableOpeners;
@@ -9,6 +10,7 @@ namespace ScheduleUnifier.Parsing.TableParsers
     {
         private readonly ITable table;
         private readonly IFacultyAndSpecializationParser facultyAndSpecializationParser;
+        private int lastNotEmptyRow;
 
         public TableParser(ITableOpener tableOpener)
         {
@@ -18,6 +20,7 @@ namespace ScheduleUnifier.Parsing.TableParsers
 
         public ParsedTable Parse()
         {
+            this.lastNotEmptyRow = table.GetLastNotEmptyRow();
             int headerRowIndex = FindHeaderRow();
             var parsedTable = new ParsedTable();
             (parsedTable.Faculty, parsedTable.Specializations) = facultyAndSpecializationParser.Parse();
@@ -25,47 +28,23 @@ namespace ScheduleUnifier.Parsing.TableParsers
             return parsedTable;
         }
 
-        //private void ParseFacultyAndSpecializations(int headerRowIndex, ParsedTable parsedTable)
-        //{
-        //    for (int row = 1; row < headerRowIndex; row++)
-        //    {
-        //        for (int col = 1; IsNotEmptyCell(row, col); col++)
-        //        {
-        //            string cellText = table[row, col];
-        //            if (cellText.Contains("факультет", StringComparison.InvariantCultureIgnoreCase))
-        //            {
-        //                parsedTable.Faculty = cellText.Trim();
-        //            }
-
-        //            else if (cellText.Contains("спеціальність", StringComparison.InvariantCultureIgnoreCase))
-        //            {
-        //                //This regex pattern retrieves from string all substrings that contained inside either "" or «» quotes
-        //                parsedTable.Specializations = Regex.Matches(cellText, "(?<=\"|«)[^\"«]+(?=\"|»)")
-        //                        .Select(m => m.Value.Trim())
-        //                        .ToList();
-        //            }
-        //        }
-        //    }
-        //}
-
         private List<ParsedRow> ParseRows(int headerRowIndex)
         {
             var parsedRows = new List<ParsedRow>();
-            int lastNotEmptyRow = table.GetLastNotEmptyRow();
 
             string lastDay = "";
             string lastTime = "";
 
-            for (int row = headerRowIndex; row < lastNotEmptyRow; row++)
+            for (int row = headerRowIndex; row <= lastNotEmptyRow; row++)
             {
-                if (IsNotEmptyCell(row, 1))
+                if (IsNotEmptyCell(row, 0))
                 {
-                    lastDay = table[row, 1];
+                    lastDay = table[row, 0];
                 }
 
-                if (IsNotEmptyCell(row, 2))
+                if (IsNotEmptyCell(row, 1))
                 {
-                    lastTime = table[row, 2];
+                    lastTime = table[row, 1];
                 }
 
                 ParsedRow? parsedRow = ParseRow(row, lastDay, lastTime);
@@ -83,7 +62,7 @@ namespace ScheduleUnifier.Parsing.TableParsers
         {
             var parsedValues = new List<string>();
 
-            for (int col = 3; IsNotEmptyCell(row, col); col++)
+            for (int col = 2; IsNotEmptyCell(row, col); col++)
             {
                 parsedValues.Add(table[row, col]);
             }
@@ -111,12 +90,15 @@ namespace ScheduleUnifier.Parsing.TableParsers
 
         private int FindHeaderRow()
         {
-            int startRow = 1;
-            while (!table[startRow, 1]
+            int startRow = 0;
+            while (!table[startRow, 0]
                 .Equals("День", StringComparison.InvariantCultureIgnoreCase))
             {
-                var debug = table[startRow, 1];
                 startRow++;
+                if(startRow > this.lastNotEmptyRow)
+                {
+                    throw new NotFoundHeaderException();
+                }
             }
 
             return startRow + 1;

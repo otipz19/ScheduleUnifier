@@ -15,9 +15,6 @@ namespace ScheduleUnifier.Parsing.TableModels
         {
             get
             {
-                //Just to conduct with 1-based indexing from EPPlus
-                row--;
-                col--;
                 try
                 {
                     TableCell cell = table.GetRow(row).GetCell(col);

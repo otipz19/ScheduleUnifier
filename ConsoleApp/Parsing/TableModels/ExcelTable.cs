@@ -13,7 +13,16 @@ namespace ScheduleUnifier.Parsing.TableModels
             this.table = table;
         }
 
-        public string this[int row, int col] => table.Cells[row, col].Text;
+        public string this[int row, int col]
+        {
+            get
+            {
+                //Just to conduct with 1-based indexing from EPPlus
+                row++;
+                col++;
+                return table.Cells[row, col].Text;
+            }
+        }
 
         public int GetLastNotEmptyRow()
         {

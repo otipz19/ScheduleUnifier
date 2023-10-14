@@ -13,7 +13,14 @@ internal class TableMock : ITable
     {
         get
         {
-            return cells[row, col];
+            try
+            {
+                return cells[row, col];
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
     }
 

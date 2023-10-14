@@ -1,6 +1,6 @@
 ﻿namespace ScheduleUnifier.Parsing.Exceptions
 {
-    internal class NotFoundTableException : ApplicationException
+    public class NotFoundTableException : ApplicationException
     {
         public NotFoundTableException(string? filePath)
             : base($"Not found table in file: {filePath}")
