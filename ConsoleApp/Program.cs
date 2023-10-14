@@ -118,7 +118,7 @@ namespace ConsoleApp
 
         private static FileInfo ConvertDocToDocx(FileInfo file)
         {
-            var converter = new DocToDocxConverter();
+            var converter = new B2xConverter();
             string newFileName = converter.Convert(file.FullName);
             file.Delete();
             return new FileInfo(newFileName);

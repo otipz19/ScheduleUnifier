@@ -4,7 +4,7 @@ using NPOI.XWPF.UserModel;
 
 namespace ConsoleApp.Parsing.Converters
 {
-    internal class DocToDocxConverter
+    internal class DocToDocxConverter : IDocToDocxConverter
     {
         public string Convert(string filePath)
         {
@@ -14,7 +14,7 @@ namespace ConsoleApp.Parsing.Converters
 
             var docRange = doc.GetRange();
 
-            for(int i = 0; i < docRange.NumParagraphs; i++)
+            for (int i = 0; i < docRange.NumParagraphs; i++)
             {
                 XWPFParagraph targetParagraph = docx.CreateParagraph();
                 var sourceParagraph = docRange.GetParagraph(i);
@@ -28,11 +28,11 @@ namespace ConsoleApp.Parsing.Converters
             }
 
             var tableIterator = new TableIterator(docRange);
-            while(tableIterator.HasNext())
+            while (tableIterator.HasNext())
             {
                 var sourceTable = tableIterator.Next();
                 XWPFTable targetTable = docx.CreateTable();
-                for(int i = 0; i < sourceTable.NumRows; i++)
+                for (int i = 0; i < sourceTable.NumRows; i++)
                 {
                     XWPFTableRow targetRow = targetTable.CreateRow();
                     var sourceRow = sourceTable.GetRow(i);
@@ -44,7 +44,7 @@ namespace ConsoleApp.Parsing.Converters
                     }
                 }
             }
-            
+
             string convertedFilePath = filePath.Replace(".doc", ".docx");
             using (FileStream stream = new FileStream(convertedFilePath, FileMode.Create, FileAccess.Write))
             {
