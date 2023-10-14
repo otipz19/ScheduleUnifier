@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Wordprocessing;
+using ScheduleUnifier.Parsing.Exceptions;
 
 namespace ScheduleUnifier.Parsing.TableModels
 {
@@ -59,10 +60,18 @@ namespace ScheduleUnifier.Parsing.TableModels
         public int GetLastNotEmptyRow()
         {
             TableRow[] rows = table.Elements<TableRow>().ToArray();
+            if(rows.Length == 0)
+            {
+                throw new EmptyTableException();
+            }
             int lastNotEmptyRowIndex = rows.Length - 1;
             while (!IsRowNotEmpty(rows[lastNotEmptyRowIndex]))
             {
                 lastNotEmptyRowIndex--;
+                if(lastNotEmptyRowIndex < 0)
+                {
+                    throw new EmptyTableException();
+                }
             }
             return lastNotEmptyRowIndex;
         }

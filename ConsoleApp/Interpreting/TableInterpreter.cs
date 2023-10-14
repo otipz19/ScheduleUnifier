@@ -60,13 +60,13 @@ namespace ScheduleUnifier.Interpreting
         {
             var record = new RecordModel()
             {
-                Faculty = faculty,
-                Specialization = specialization,
-                Day = parsedRow.Day,
-                Time = parsedRow.Time,
+                Faculty = faculty.Trim(),
+                Specialization = specialization.Trim(),
+                Day = parsedRow.Day.Trim(),
+                Time = parsedRow.Time.Trim(),
                 Discipline = FormatDiscipline(parsedRow),
                 Group = FormatGroup(parsedRow.Group),
-                Weeks = parsedRow.Weeks,
+                Weeks = parsedRow.Weeks.Trim(),
                 Classroom = FormatClassroom(parsedRow.Classroom),
             };
             return record;

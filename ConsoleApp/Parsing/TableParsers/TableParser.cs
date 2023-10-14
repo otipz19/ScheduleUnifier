@@ -27,7 +27,12 @@ namespace ScheduleUnifier.Parsing.TableParsers
                 isTarget = true;
                 return isTarget.Value;
             }
-            catch(NotFoundHeaderException)
+            catch (NotFoundHeaderException)
+            {
+                isTarget = false;
+                return isTarget.Value;
+            }
+            catch(EmptyTableException)
             {
                 isTarget = false;
                 return isTarget.Value;

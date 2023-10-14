@@ -1,12 +1,11 @@
-﻿using ScheduleUnifier.Serialization;
-using ScheduleUnifier.Interpreting;
+﻿using ScheduleUnifier.Interpreting;
 using ScheduleUnifier.Interpreting.Models;
 using ScheduleUnifier.Parsing.Converters;
+using ScheduleUnifier.Parsing.DocumentParsers;
 using ScheduleUnifier.Parsing.Exceptions;
 using ScheduleUnifier.Parsing.Models;
 using ScheduleUnifier.Parsing.TableOpeners;
-using ScheduleUnifier.Parsing.TableParsers;
-using ScheduleUnifier.Parsing.DocumentParsers;
+using ScheduleUnifier.Serialization;
 
 namespace ScheduleUnifier
 {
@@ -25,7 +24,7 @@ namespace ScheduleUnifier
             try
             {
                 var filesToParse = GetFilesToParse();
-                
+
                 foreach (var file in filesToParse)
                 {
                     ProcessTableInFile(file);
@@ -41,7 +40,7 @@ namespace ScheduleUnifier
 
         private static void ProcessTableInFile((string filePath, bool isExcel) file)
         {
-            ParsedDocument parsedTable = ParseTable(file);
+            ParsedDocument parsedTable = ParseDocument(file);
 
             IEnumerable<RecordModel> records = interpreter.Interpret(parsedTable);
 
@@ -51,7 +50,7 @@ namespace ScheduleUnifier
             }
         }
 
-        private static ParsedDocument ParseTable((string filePath, bool isExcel) file)
+        private static ParsedDocument ParseDocument((string filePath, bool isExcel) file)
         {
             IDocumentOpener documentOpener = ResolveDocumentOpenerType(file);
             IDocumentParser documentParser = new DocumentParser(documentOpener);
