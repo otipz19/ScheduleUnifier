@@ -1,9 +1,10 @@
 ﻿using ConsoleApp.Interpreting;
 using ConsoleApp.Interpreting.Models;
-using ConsoleApp.Parsing;
+using ConsoleApp.Parsing.Converters;
 using ConsoleApp.Parsing.Exceptions;
 using ConsoleApp.Parsing.Models;
-using ConsoleApp.Parsing.TableModels;
+using ConsoleApp.Parsing.TableOpeners;
+using ConsoleApp.Parsing.TableParsers;
 using ConsoleApp.Serialization.Models;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -22,6 +23,7 @@ namespace ConsoleApp
 
         static void Main(string[] args)
         {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             try
             {
                 var filesToParse = GetFilesToParse();
@@ -60,7 +62,7 @@ namespace ConsoleApp
 
         private static ITableOpener ResolveTableOpenerType((string filePath, bool isExcel) file)
         {
-            return file.isExcel ? new ExcelTableOpener(file.filePath) : new WordTableOpener(file.filePath);
+            return file.isExcel ? new ExcelTableOpener(file.filePath) : new DocxTableOpener(file.filePath);
         }
 
         private static void SerializeSchedule()
@@ -90,17 +92,36 @@ namespace ConsoleApp
             }
 
             string[] parsableExtensions = new string[] { ".doc", ".docx", ".xlsx" };
-            var filesToParse =  inputDir.GetFiles()
-                .Where(f => parsableExtensions.Contains(f.Extension))
-                .Select(f => (f.FullName, f.Extension.Equals(".xlsx")))
-                .ToArray();
+            var filesToParse = inputDir.GetFiles()
+                .Where(f => parsableExtensions.Contains(f.Extension));
 
             if (!filesToParse.Any())
             {
                 throw new InputFilesNotFoundException();
             }
 
-            return filesToParse;
+            var docsToConvert = filesToParse.Where(f => f.Extension.Equals(".doc"));
+            filesToParse.Where(f => !docsToConvert.Contains(f));
+            var convertedDocs = new List<FileInfo>();
+
+            foreach(var doc in docsToConvert)
+            {
+                convertedDocs.Add(ConvertDocToDocx(doc));
+            }
+
+            var result = new List<(string filePath, bool isExcel)>();
+            result.AddRange(filesToParse.Select(f => (f.FullName, f.Extension.Equals(".xlsx"))));
+            result.AddRange(convertedDocs.Select(f => (f.FullName, f.Extension.Equals(".xlsx"))));
+
+            return result.ToArray();
+        }
+
+        private static FileInfo ConvertDocToDocx(FileInfo file)
+        {
+            var converter = new DocToDocxConverter();
+            string newFileName = converter.Convert(file.FullName);
+            file.Delete();
+            return new FileInfo(newFileName);
         }
     }
 }

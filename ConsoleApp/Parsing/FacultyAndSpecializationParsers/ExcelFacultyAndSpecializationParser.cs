@@ -2,7 +2,7 @@
 using ConsoleApp.Parsing.TableModels;
 using System.Text.RegularExpressions;
 
-namespace ConsoleApp.Parsing
+namespace ConsoleApp.Parsing.FacultyAndSpecializationParsers
 {
     internal class ExcelFacultyAndSpecializationParser : IFacultyAndSpecializationParser
     {
@@ -40,7 +40,7 @@ namespace ConsoleApp.Parsing
                 }
             }
 
-            if(faculty is null)
+            if (faculty is null)
             {
                 throw new NotFoundFacultyException();
             }

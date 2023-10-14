@@ -1,8 +1,9 @@
-﻿using ConsoleApp.Parsing.Models;
+﻿using ConsoleApp.Parsing.FacultyAndSpecializationParsers;
+using ConsoleApp.Parsing.Models;
 using ConsoleApp.Parsing.TableModels;
-using System.Text.RegularExpressions;
+using ConsoleApp.Parsing.TableOpeners;
 
-namespace ConsoleApp.Parsing
+namespace ConsoleApp.Parsing.TableParsers
 {
     internal class TableParser : ITableParser
     {
@@ -11,8 +12,8 @@ namespace ConsoleApp.Parsing
 
         public TableParser(ITableOpener tableOpener)
         {
-            this.table = tableOpener.Table;
-            this.facultyAndSpecializationParser = tableOpener.FacultyAndSpecializationParser;
+            table = tableOpener.Table;
+            facultyAndSpecializationParser = tableOpener.FacultyAndSpecializationParser;
         }
 
         public ParsedTable Parse()
@@ -111,10 +112,10 @@ namespace ConsoleApp.Parsing
         private int FindHeaderRow()
         {
             int startRow = 1;
-            while (!this.table[startRow, 1]
+            while (!table[startRow, 1]
                 .Equals("День", StringComparison.InvariantCultureIgnoreCase))
             {
-                var debug = this.table[startRow, 1];
+                var debug = table[startRow, 1];
                 startRow++;
             }
 

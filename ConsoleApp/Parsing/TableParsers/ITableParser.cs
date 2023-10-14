@@ -1,6 +1,6 @@
 ﻿using ConsoleApp.Parsing.Models;
 
-namespace ConsoleApp.Parsing
+namespace ConsoleApp.Parsing.TableParsers
 {
     internal interface ITableParser
     {

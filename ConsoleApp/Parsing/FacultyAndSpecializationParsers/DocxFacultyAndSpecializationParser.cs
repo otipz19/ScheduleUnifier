@@ -3,13 +3,13 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Text.RegularExpressions;
 
-namespace ConsoleApp.Parsing
+namespace ConsoleApp.Parsing.FacultyAndSpecializationParsers
 {
-    internal class WordFacultyAndSpecializationParser : IFacultyAndSpecializationParser
+    internal class DocxFacultyAndSpecializationParser : IFacultyAndSpecializationParser
     {
         private readonly WordprocessingDocument document;
 
-        public WordFacultyAndSpecializationParser(WordprocessingDocument document)
+        public DocxFacultyAndSpecializationParser(WordprocessingDocument document)
         {
             this.document = document;
         }
@@ -46,7 +46,7 @@ namespace ConsoleApp.Parsing
                 }
             }
 
-            if(faculty is null)
+            if (faculty is null)
             {
                 throw new NotFoundFacultyException();
             }
@@ -61,7 +61,7 @@ namespace ConsoleApp.Parsing
 
         private string? FindFaculty(Text text)
         {
-            if (text.Text.Contains("факультет", StringComparison.InvariantCultureIgnoreCase) 
+            if (text.Text.Contains("факультет", StringComparison.InvariantCultureIgnoreCase)
                 && !text.Text.Contains("декан", StringComparison.InvariantCultureIgnoreCase))
             {
                 return text.Text.Trim();
@@ -72,13 +72,13 @@ namespace ConsoleApp.Parsing
 
         private IEnumerable<string> FindSpecializations(Paragraph paragraph)
         {
-            string concatedRun = string.Join(' ', paragraph.Elements<Run>()
+            string concatedRuns = string.Join(' ', paragraph.Elements<Run>()
                 .SelectMany(r => r.Elements<Text>().Select(t => t.Text)));
 
-            if (concatedRun.Contains("спеціальність", StringComparison.InvariantCultureIgnoreCase))
+            if (concatedRuns.Contains("спеціальність", StringComparison.InvariantCultureIgnoreCase))
             {
                 //This regex pattern retrieves from string all substrings that contained inside either "" or «» quotes
-                return Regex.Matches(concatedRun, "(?<=\"|«)[^\"«]+(?=\"|»)")
+                return Regex.Matches(concatedRuns, "(?<=\"|«)[^\"«]+(?=\"|»)")
                         .Select(m => m.Value.Trim())
                         .ToList();
             }

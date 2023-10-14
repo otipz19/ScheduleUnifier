@@ -1,7 +1,6 @@
 ﻿using ConsoleApp.Parsing.Exceptions;
-using ConsoleApp.Parsing.TableModels;
 
-namespace ConsoleApp.Parsing
+namespace ConsoleApp.Parsing.TableOpeners
 {
     internal abstract class BaseTableOpener
     {
@@ -18,7 +17,7 @@ namespace ConsoleApp.Parsing
             }
             catch (Exception ex)
             {
-                throw new TableNotFoundException(filePath, ex);
+                throw new NotFoundTableException(filePath, ex);
             }
         }
 

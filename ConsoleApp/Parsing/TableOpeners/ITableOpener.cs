@@ -1,6 +1,7 @@
-﻿using ConsoleApp.Parsing.TableModels;
+﻿using ConsoleApp.Parsing.FacultyAndSpecializationParsers;
+using ConsoleApp.Parsing.TableModels;
 
-namespace ConsoleApp.Parsing
+namespace ConsoleApp.Parsing.TableOpeners
 {
     internal interface ITableOpener
     {

@@ -1,7 +1,8 @@
-﻿using ConsoleApp.Parsing.TableModels;
+﻿using ConsoleApp.Parsing.FacultyAndSpecializationParsers;
+using ConsoleApp.Parsing.TableModels;
 using OfficeOpenXml;
 
-namespace ConsoleApp.Parsing
+namespace ConsoleApp.Parsing.TableOpeners
 {
     internal class ExcelTableOpener : BaseTableOpener, ITableOpener
     {
@@ -18,7 +19,7 @@ namespace ConsoleApp.Parsing
         protected override void OpenDocument(string filePath)
         {
             var fileInfo = new FileInfo(filePath);
-            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             package = new ExcelPackage(fileInfo);
             ExcelWorksheet excelWorksheet = package.Workbook.Worksheets[0];
             Table = new ExcelTable(excelWorksheet);

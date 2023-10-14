@@ -1,14 +1,15 @@
 ﻿using ConsoleApp.Parsing.TableModels;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Packaging;
+using ConsoleApp.Parsing.FacultyAndSpecializationParsers;
 
-namespace ConsoleApp.Parsing
+namespace ConsoleApp.Parsing.TableOpeners
 {
-    internal class WordTableOpener : BaseTableOpener, ITableOpener
+    internal class DocxTableOpener : BaseTableOpener, ITableOpener
     {
         private WordprocessingDocument doc = default!;
 
-        public WordTableOpener(string filePath) : base(filePath) { }
+        public DocxTableOpener(string filePath) : base(filePath) { }
 
         public ITable Table { get; private set; }
 
@@ -17,8 +18,8 @@ namespace ConsoleApp.Parsing
         protected override void OpenDocument(string filePath)
         {
             doc = WordprocessingDocument.Open(filePath, false);
-            Table = new WordTable(doc.MainDocumentPart!.Document.Body!.Elements<Table>().First());
-            FacultyAndSpecializationParser = new WordFacultyAndSpecializationParser(doc);
+            Table = new DocxTable(doc.MainDocumentPart!.Document.Body!.Elements<Table>().First());
+            FacultyAndSpecializationParser = new DocxFacultyAndSpecializationParser(doc);
         }
 
         public void Close()

@@ -2,13 +2,13 @@
 
 namespace ConsoleApp.Parsing.TableModels
 {
-    internal class WordTable : ITable
+    internal class DocxTable : ITable
     {
         private readonly Table table;
 
         private string[,] cells;
 
-        public WordTable(Table table)
+        public DocxTable(Table table)
         {
             this.table = table;
 
