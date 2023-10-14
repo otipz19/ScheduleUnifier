@@ -1,8 +1,7 @@
-﻿using ScheduleUnifier.Interpreting;
+﻿using ScheduleUnifier.FileProviders;
+using ScheduleUnifier.Interpreting;
 using ScheduleUnifier.Interpreting.Models;
-using ScheduleUnifier.Parsing.Converters;
 using ScheduleUnifier.Parsing.DocumentParsers;
-using ScheduleUnifier.Parsing.Exceptions;
 using ScheduleUnifier.Parsing.Models;
 using ScheduleUnifier.Parsing.TableOpeners;
 using ScheduleUnifier.Serialization;
@@ -11,26 +10,20 @@ namespace ScheduleUnifier
 {
     internal static class Program
     {
-        private static string FullInputPath => Path.Join(AppDomain.CurrentDomain.BaseDirectory, "input");
         private static string FullOutputDirectoryPath => Path.Join(AppDomain.CurrentDomain.BaseDirectory, "output");
         private static string FullOutputFilePath => Path.Join(FullOutputDirectoryPath, "output.json");
 
-        private static readonly TableInterpreter interpreter = new TableInterpreter();
+        private static readonly ITableInterpreter interpreter = new TableInterpreter();
         private static readonly ScheduleHandler scheduleHandler = new ScheduleHandler();
 
         static void Main(string[] args)
         {
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             try
             {
-                var filesToParse = GetFilesToParse();
-
-                foreach (var file in filesToParse)
-                {
-                    ProcessTableInFile(file);
-                }
-
-                scheduleHandler.Serialize(FullOutputDirectoryPath, FullOutputFilePath);
+                IFileProvider fileProvider = new HttpFileProvider(new string[]
+                    { "https://my.ukma.edu.ua/files/schedule/2023/1/1472/3.xlsx" });
+                //IFileProvider fileProvider = new LocalFileProvider();
+                ProcessFiles(fileProvider.GetFilesToParse());
             }
             catch (Exception ex)
             {
@@ -38,11 +31,21 @@ namespace ScheduleUnifier
             }
         }
 
-        private static void ProcessTableInFile((string filePath, bool isExcel) file)
+        private static void ProcessFiles((string filePath, bool isExcel)[] filesToParse)
         {
-            ParsedDocument parsedTable = ParseDocument(file);
+            foreach (var file in filesToParse)
+            {
+                ProcessDocumentInFile(file);
+            }
 
-            IEnumerable<RecordModel> records = interpreter.Interpret(parsedTable);
+            scheduleHandler.Serialize(FullOutputDirectoryPath, FullOutputFilePath);
+        }
+
+        private static void ProcessDocumentInFile((string filePath, bool isExcel) file)
+        {
+            ParsedDocument parsedDocument = ParseDocument(file);
+
+            IEnumerable<RecordModel> records = interpreter.Interpret(parsedDocument);
 
             foreach (var record in records)
             {
@@ -60,48 +63,6 @@ namespace ScheduleUnifier
         private static IDocumentOpener ResolveDocumentOpenerType((string filePath, bool isExcel) file)
         {
             return file.isExcel ? new ExcelDocumentOpener(file.filePath) : new DocxDocumentOpener(file.filePath);
-        }
-
-        private static (string filePath, bool isExcel)[] GetFilesToParse()
-        {
-            var inputDir = new DirectoryInfo(FullInputPath);
-
-            if (!inputDir.Exists)
-            {
-                throw new InputFilesNotFoundException();
-            }
-
-            string[] parsableExtensions = new string[] { ".doc", ".docx", ".xlsx" };
-            var filesToParse = inputDir.GetFiles()
-                .Where(f => parsableExtensions.Contains(f.Extension));
-
-            if (!filesToParse.Any())
-            {
-                throw new InputFilesNotFoundException();
-            }
-
-            var docsToConvert = filesToParse.Where(f => f.Extension.Equals(".doc"));
-            filesToParse.Where(f => !docsToConvert.Contains(f));
-            var convertedDocs = new List<FileInfo>();
-
-            foreach(var doc in docsToConvert)
-            {
-                convertedDocs.Add(ConvertDocToDocx(doc));
-            }
-
-            var result = new List<(string filePath, bool isExcel)>();
-            result.AddRange(filesToParse.Select(f => (f.FullName, f.Extension.Equals(".xlsx"))));
-            result.AddRange(convertedDocs.Select(f => (f.FullName, f.Extension.Equals(".xlsx"))));
-
-            return result.ToArray();
-        }
-
-        private static FileInfo ConvertDocToDocx(FileInfo file)
-        {
-            var converter = new B2xConverter();
-            string newFileName = converter.Convert(file.FullName);
-            file.Delete();
-            return new FileInfo(newFileName);
         }
     }
 }

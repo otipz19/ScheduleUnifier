@@ -20,6 +20,9 @@ namespace ScheduleUnifier.Parsing.TableParsers
 
         public bool IsTargetTable()
         {
+            if (isTarget.HasValue)
+                return isTarget.Value;
+
             try
             {
                 this.lastNotEmptyRow = table.GetLastNotEmptyRow();

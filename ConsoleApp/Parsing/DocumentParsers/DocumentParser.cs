@@ -28,8 +28,9 @@ namespace ScheduleUnifier.Parsing.DocumentParsers
             foreach(var table in tables)
             {
                 var tableParser = new TableParser(table);
-                if (foundTargetTables |= tableParser.IsTargetTable())
+                if (tableParser.IsTargetTable())
                 {
+                    foundTargetTables |= tableParser.IsTargetTable();
                     parsedRows.AddRange(tableParser.ParseRows());
                 }
             }
