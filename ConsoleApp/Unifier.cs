@@ -2,7 +2,6 @@
 using ScheduleUnifier.Interpreting;
 using ScheduleUnifier.Interpreting.Models;
 using ScheduleUnifier.Parsing.DocumentParsers;
-using ScheduleUnifier.Parsing.Exceptions;
 using ScheduleUnifier.Parsing.Models;
 using ScheduleUnifier.Parsing.TableOpeners;
 using ScheduleUnifier.Serialization;
@@ -50,14 +49,8 @@ namespace ScheduleUnifier
 
         public void Run()
         {
-            try
-            {
-                ProcessFiles(fileProvider.GetFilesToParse(inputDirPath));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"{ex.Message}\n{ex.StackTrace}");
-            }
+            var filesToParse = fileProvider.GetFilesToParse(inputDirPath);
+            ProcessFiles(filesToParse);
         }
 
         private void SetPath(ref string config, string? input)
