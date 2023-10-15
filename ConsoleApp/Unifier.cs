@@ -1,4 +1,6 @@
-﻿using ScheduleUnifier.FileProviders;
+﻿using ScheduleUnifier.Configuration;
+using ScheduleUnifier.Exceptions;
+using ScheduleUnifier.FileProviders;
 using ScheduleUnifier.Interpreting;
 using ScheduleUnifier.Interpreting.Models;
 using ScheduleUnifier.Parsing.DocumentParsers;
@@ -14,43 +16,30 @@ namespace ScheduleUnifier
         private readonly ScheduleHandler scheduleHandler = new ScheduleHandler();
         private readonly IFileProvider fileProvider;
 
-        private static string DefaultInputPath => Path.Join(AppDomain.CurrentDomain.BaseDirectory, "input");
-        private static string DefaultOutputDirectoryPath => Path.Join(AppDomain.CurrentDomain.BaseDirectory, "output");
-        private static string DefaultOutputFilePath => Path.Join(DefaultOutputDirectoryPath, "output.json");
-        private static string[] DefaultUrls => new string[]
+        private readonly ConfigurationModel config;
+
+        public Unifier(ConfigurationModel config)
         {
-            "https://my.ukma.edu.ua/files/schedule/2023/1/1475/1.docx",
-            "https://my.ukma.edu.ua/files/schedule/2023/1/1472/3.xlsx",
-            "https://my.ukma.edu.ua/files/schedule/2023/1/1483/3.xlsx",
-            "https://my.ukma.edu.ua/files/schedule/2023/1/1562/1.docx",
-        };
-
-        private string inputDirPath = DefaultInputPath;
-        private string outputDirPath = DefaultOutputDirectoryPath;
-        private string outputFilePath = DefaultOutputFilePath;
-        private string[] urls = DefaultUrls;
-
-        public Unifier(
-            string? inputDirPath = null,
-            string? outputDirPath = null,
-            bool isHttp = false,
-            IEnumerable<string>? urls = null)
-        {
-            SetPath(ref this.inputDirPath, inputDirPath);
-            SetPath(ref this.outputDirPath, outputDirPath);
-
-            if(urls is not null && urls.Any())
-            {
-                this.urls = urls.ToArray();
-            }
-
-            fileProvider = isHttp ? new HttpFileProvider(this.urls) : new LocalFileProvider();
+            this.config = config;
+            fileProvider = config.UseHttp ? new HttpFileProvider(config.Urls) : new LocalFileProvider();
         }
+
+        public int FilesProcessed { get; private set; }
+        public int FilesTotal { get; private set; }
+
 
         public void Run()
         {
-            var filesToParse = fileProvider.GetFilesToParse(inputDirPath);
-            ProcessFiles(filesToParse);
+            try
+            {
+                var filesToParse = fileProvider.GetFilesToParse(config.InputDirPath);
+                FilesTotal = filesToParse.Length;
+                ProcessFiles(filesToParse);
+            }
+            catch(UnsupportedDocFormatException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private void SetPath(ref string config, string? input)
@@ -75,14 +64,15 @@ namespace ScheduleUnifier
                 try
                 {
                     ProcessDocumentInFile(file);
+                    FilesProcessed++;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    Console.WriteLine($"Exception occured while processing file: {file.filePath}\n{ex.Message}\n{ex.StackTrace}");
+                    Console.WriteLine($"Exception occured while processing file: {file.filePath}\n{ex.Message}\n");
                 }
             }
 
-            scheduleHandler.Serialize(outputDirPath, outputFilePath);
+            scheduleHandler.Serialize(config.OutputDirPath, Path.Join(config.OutputDirPath, "output.json"));
         }
 
         private void ProcessDocumentInFile((string filePath, bool isExcel) file)

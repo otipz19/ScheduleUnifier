@@ -2,7 +2,7 @@
   "profiles": {
     "ScheduleUnifier": {
       "commandName": "Project",
-      "commandLineArgs": "-h true"
+      "commandLineArgs": "config --input new-input"
     }
   }
 }

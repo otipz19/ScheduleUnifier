@@ -2,12 +2,12 @@
 {
     public class ConfigurationModel
     {
-        public string? InputDirPath { get; set; }
+        public string InputDirPath { get; set; } = default!;
 
-        public string? OutputDirPath { get; set; }
+        public string OutputDirPath { get; set; } = default!;
 
-        public bool UseHttp { get; set; }
+        public bool UseHttp { get; set; } = default!;
 
-        public IEnumerable<string>? Urls { get; set; }
+        public IEnumerable<string> Urls { get; set; } = default!;
     }
 }

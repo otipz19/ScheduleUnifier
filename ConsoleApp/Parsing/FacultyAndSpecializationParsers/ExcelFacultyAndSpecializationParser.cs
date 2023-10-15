@@ -1,6 +1,5 @@
-﻿using ScheduleUnifier.Parsing.Exceptions;
+﻿using ScheduleUnifier.Exceptions;
 using ScheduleUnifier.Parsing.TableModels;
-using ScheduleUnifier.Serialization.Models;
 
 namespace ScheduleUnifier.Parsing.FacultyAndSpecializationParsers
 {

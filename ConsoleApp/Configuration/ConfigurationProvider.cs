@@ -41,30 +41,25 @@ namespace ScheduleUnifier.Configuration
             }
         }
 
-        public static void SetInputDir(string inputDir)
-        {
-            SetParameter((config) => config.InputDirPath = inputDir);
-        }
-
-        public static void SetOutputDir(string outputDir)
-        {
-            SetParameter((config) => config.OutputDirPath = outputDir);
-        }
-
-        public static void SetUseHttp(bool useHttp)
-        {
-            SetParameter((config) => config.UseHttp = useHttp);
-        }
-
-        public static void SetUrls(IEnumerable<string> urls)
-        {
-            SetParameter((config) => config.Urls = urls);
-        }
-
-        private static void SetParameter(Action<ConfigurationModel> action)
+        public static void SetParameters(string? inputDir, string? outputDir, bool? useHttp, IEnumerable<string>? urls)
         {
             var config = GetConfiguration();
-            action(config);
+            if(inputDir is not null)
+            {
+                config.InputDirPath = inputDir;
+            }
+            if (outputDir is not null)
+            {
+                config.OutputDirPath = outputDir;
+            }
+            if (useHttp is not null)
+            {
+                config.UseHttp = useHttp.Value;
+            }
+            if (urls is not null && urls.Any())
+            {
+                config.Urls = urls;
+            }
             PersistConfig(configFilePath, config);
         }
 
@@ -124,9 +119,11 @@ namespace ScheduleUnifier.Configuration
         private static void PersistConfig(string configFilePath, ConfigurationModel config)
         {
             config = ValidateConfig(config);
-            File.Create(configFilePath);
-            string defaultConfigJson = JsonSerializer.Serialize(defaultConfig);
-            File.WriteAllText(configFilePath, defaultConfigJson);
+            string json = JsonSerializer.Serialize(config, options: new JsonSerializerOptions()
+            {
+                WriteIndented = true,
+            });
+            File.WriteAllText(configFilePath, json);
         }
 
         private static ConfigurationModel ValidateConfig(ConfigurationModel config)

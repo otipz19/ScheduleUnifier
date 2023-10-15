@@ -1,4 +1,4 @@
-﻿using ScheduleUnifier.Parsing.Exceptions;
+﻿using ScheduleUnifier.Exceptions;
 
 namespace ScheduleUnifier.Parsing.TableOpeners
 {

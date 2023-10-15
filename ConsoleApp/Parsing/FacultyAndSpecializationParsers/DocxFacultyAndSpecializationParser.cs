@@ -1,6 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using ScheduleUnifier.Parsing.Exceptions;
+using ScheduleUnifier.Exceptions;
 
 namespace ScheduleUnifier.Parsing.FacultyAndSpecializationParsers
 {

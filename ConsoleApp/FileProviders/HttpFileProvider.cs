@@ -15,6 +15,13 @@
             {
                 Directory.CreateDirectory(inputDirPath);
             }
+            else
+            {
+                foreach (var file in Directory.EnumerateFiles(inputDirPath))
+                {
+                    File.Delete(file);
+                }
+            }
 
             var httpLoader = new HttpFileLoader();
             foreach (var url in urls)
