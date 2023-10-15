@@ -1,4 +1,4 @@
-﻿using ScheduleUnifier.Parsing.Exceptions;
+﻿using ScheduleUnifier.Exceptions;
 using ScheduleUnifier.Parsing.Models;
 using ScheduleUnifier.Parsing.TableModels;
 using ScheduleUnifier.Parsing.TableParsers;

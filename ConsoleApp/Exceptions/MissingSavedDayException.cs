@@ -1,4 +1,4 @@
-﻿namespace ScheduleUnifier.Parsing.Exceptions
+﻿namespace ScheduleUnifier.Exceptions
 {
     public class MissingSavedDayException : MissingSavedValueException
     {
