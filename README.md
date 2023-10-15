@@ -1,10 +1,6 @@
 # Schedule Unifier
 
-***
-
 CLI Application that allows user to format NaUKMA schedule into JSON.
-
-***
 
 ## Features
 
@@ -14,8 +10,6 @@ CLI Application that allows user to format NaUKMA schedule into JSON.
 - Simple command-line interface.
 
 _*Binary formats like .doc are currently unsupported._
-
-***
 
 ## Usage guide
 
@@ -47,8 +41,6 @@ ScheduleUnifier.exe run
 ```sh
 ScheduleUnifier.exe config --input [input folder path] --output [output folder path] --http [true/false] --urls [urls list]
 ```
-
-***
 
 ## Technologies used
 
