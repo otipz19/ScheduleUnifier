@@ -22,7 +22,7 @@ namespace ScheduleUnifier.Serialization.Models
             var options = new JsonSerializerOptions()
             {
                 WriteIndented = true,
-                Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             };
             return JsonSerializer.Serialize<Schedule>(this, options);
         }
