@@ -79,7 +79,14 @@ namespace ScheduleUnifier
         {
             foreach (var file in filesToParse)
             {
-                ProcessDocumentInFile(file);
+                try
+                {
+                    ProcessDocumentInFile(file);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine($"Exception occured while processing file: {file.filePath}\n{ex.Message}\n{ex.StackTrace}");
+                }
             }
 
             scheduleHandler.Serialize(outputDirPath, outputFilePath);

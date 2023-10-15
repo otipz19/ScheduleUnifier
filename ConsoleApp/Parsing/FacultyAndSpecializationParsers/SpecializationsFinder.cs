@@ -6,7 +6,8 @@ namespace ScheduleUnifier.Parsing.FacultyAndSpecializationParsers
     {
         public bool TryFind(string text, out List<string>? specializations)
         {
-            if (text.Contains("спеціальність", StringComparison.InvariantCultureIgnoreCase))
+            var specWordRegex = new Regex(@"с\s*п\s*е\s*ц\s*і\s*а\s*л\s*ь\s*н\s*і\s*с\s*т", RegexOptions.IgnoreCase);
+            if (specWordRegex.Matches(text).Any())
             {
                 //This regex pattern retrieves from string all substrings that contained inside either "" or «» quotes
                 specializations = Regex.Matches(text, "(?<=\"|«)[^\"«]+(?=\"|»)")

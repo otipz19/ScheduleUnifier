@@ -28,8 +28,8 @@ namespace ScheduleUnifier
             var urlsOption = SetupUrlsOption();
             rootCommand.SetHandler((inputDir, outputDir, isHttp, urls) =>
             {
-                Program.inputDir = inputDir.FullName;
-                Program.outputDir = outputDir.FullName;
+                Program.inputDir = inputDir?.FullName ?? null;
+                Program.outputDir = outputDir?.FullName ?? null;
                 Program.isHttp = isHttp;
                 Program.urls = urls;
             },
@@ -56,7 +56,7 @@ namespace ScheduleUnifier
             return httpOption;
         }
 
-        private static Option<DirectoryInfo> SetupOutputDirOption()
+        private static Option<DirectoryInfo?> SetupOutputDirOption()
         {
             var outputDirOption = new Option<DirectoryInfo>(
                             name: "--output",
@@ -66,7 +66,7 @@ namespace ScheduleUnifier
             return outputDirOption; 
         }
 
-        private static Option<DirectoryInfo> SetupInputDirOption()
+        private static Option<DirectoryInfo?> SetupInputDirOption()
         {
             var inputDirOption = new Option<DirectoryInfo>(
                             name: "--input",

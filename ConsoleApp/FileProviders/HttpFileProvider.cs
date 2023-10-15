@@ -19,7 +19,7 @@
             var httpLoader = new HttpFileLoader();
             foreach (var url in urls)
             {
-                string localPath = Path.Join(inputDirPath, new Guid().ToString());
+                string localPath = Path.Join(inputDirPath, Guid.NewGuid().ToString());
                 httpLoader.LoadFile(url, localPath).GetAwaiter().GetResult();
             }
             return base.GetFilesToParse(inputDirPath);
